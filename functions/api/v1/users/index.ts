@@ -34,7 +34,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .where("org_id", "=", org_id)
     .executeTakeFirst();
 
-  console.log(org);
   // TODO
   if (!org) throw new Error("Error");
 
@@ -47,7 +46,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       avatar,
       name,
     })
-    .returning(["user_id", "organization_id", "avatar", "name"])
+    .onConflict((oc) => oc.column("user_id").doUpdateSet({ name, avatar }))
+    .returning(["user_id", "avatar", "name"])
     .executeTakeFirst();
 
   // TODO
