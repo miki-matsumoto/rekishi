@@ -1,11 +1,13 @@
 import { z } from "zod";
 
+type Env = { DB: D1Database };
+
 const postInput = z.object({
   org_id: z.string().min(1),
   name: z.string().optional(),
 });
 
-export const onRequestPost: PagesFunction = async ({ request }) => {
+export const onRequestPost: PagesFunction<Env> = async ({ request }) => {
   const json = await request.json();
   const parsed = postInput.safeParse(json);
 
