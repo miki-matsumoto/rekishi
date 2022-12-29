@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { database } from "../../../../src/lib/db";
+import { nanoid } from "nanoid";
 
 type Env = { DB: D1Database };
 
@@ -21,10 +22,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       { status: 400, headers: { "content-type": "application/json" } }
     );
 
-  const db = database(env.DB);
-  // const data = db.insertInto("organization").values({})
+  const { org_id, name } = parsed.data;
 
-  return new Response(JSON.stringify(parsed.data), {
+  const db = database(env.DB);
+  const data = await db
+    .insertInto("organizations")
+    .values({
+      id: `org_${nanoid()}`,
+      org_id,
+      name,
+    })
+    .onConflict((oc) => oc.column("org_id").doUpdateSet({ name }))
+    .returning(["org_id", "name"])
+    .executeTakeFirst();
+
+  // TODO
+  if (!data) throw new Error("Failed");
+
+  return new Response(JSON.stringify(data), {
     headers: { "content-type": "application/json" },
+    status: 200,
   });
 };

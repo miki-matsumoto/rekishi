@@ -11,7 +11,7 @@ const organizationTable = z.object({
 type OrganizationTable = z.infer<typeof organizationTable>;
 
 type Database = {
-  organization: OrganizationTable;
+  organizations: OrganizationTable;
 };
 
 export const database = (d1: D1Database) =>
