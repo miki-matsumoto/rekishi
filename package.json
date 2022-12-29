@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "pnpx wrangler pages dev --local --persist -- pnpm dev:vite",
+    "dev:vite": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
