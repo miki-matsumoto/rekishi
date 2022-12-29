@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { database } from "../../../../src/lib/db";
+import { database } from "src/lib/db";
 import { nanoid } from "nanoid";
 
 type Env = { DB: D1Database };
