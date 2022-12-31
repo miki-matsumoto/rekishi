@@ -38,6 +38,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     );
 
   const key = `key_${nanoid()}`;
+  await env.PORTAL_SESSION_EXPIRE_KEY.put(key, organization);
+  const c = await env.PORTAL_SESSION_EXPIRE_KEY.get(key);
+  console.log({ c });
   const token = await jwt.sign({ organization, key }, "secret");
 
   const requestUrl = new URL(request.url);

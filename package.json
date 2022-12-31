@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "pnpx wrangler pages dev --local --persist -- pnpm dev:vite",
+    "dev": "pnpx wrangler pages dev --kv PORTAL_SESSION_EXPIRE_KEY --local --persist -- pnpm dev:vite",
     "dev:vite": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
