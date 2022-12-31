@@ -10,17 +10,17 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   const token = searchParams.get("token");
   console.log({ token });
-  if (!token) return Response.redirect(notFoundUrl);
+  if (!token) return Response.redirect(notFoundUrl, 302);
 
   const isValid = await jwt.verify(token, "secret");
   console.log({ isValid });
-  if (!isValid) return Response.redirect(notFoundUrl);
+  if (!isValid) return Response.redirect(notFoundUrl, 302);
 
   const { payload } = jwt.decode(token);
   console.log({ payload });
   const expire = await env.PORTAL_SESSION_EXPIRE_KEY.get(payload.key);
   console.log(expire);
-  if (!expire) return Response.redirect(notFoundUrl);
+  if (!expire) return Response.redirect(notFoundUrl, 302);
 
   const db = database(env.DB);
 
@@ -34,7 +34,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   if (!organization) return Response.redirect(notFoundUrl);
 
   return new Response(null, {
-    status: 301,
+    status: 302,
     headers: {
       Location: `${url.origin}/audit-logs`,
       "Set-Cookie": "dummy=dummy",
