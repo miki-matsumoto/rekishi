@@ -22,8 +22,8 @@ const auditLogs = rootRoute.createRoute({
 });
 
 const about = rootRoute.createRoute({
-  path: "/about",
-  component: () => <>abount</>,
+  path: "/not-found",
+  component: () => <>not found</>,
 });
 
 const routeConfig = rootRoute.addChildren([auditLogs, about]);
