@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { database } from "src/lib/db";
 import { nanoid } from "nanoid";
-
-type Env = { DB: D1Database };
+import { Env } from "src/lib/env";
 
 const postInput = z.object({
   org_id: z.string().min(1),
