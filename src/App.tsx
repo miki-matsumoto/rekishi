@@ -21,12 +21,12 @@ const auditLogs = rootRoute.createRoute({
   component: () => <>audit logs </>,
 });
 
-const about = rootRoute.createRoute({
+const notFound = rootRoute.createRoute({
   path: "/not-found",
   component: () => <>not found</>,
 });
 
-const routeConfig = rootRoute.addChildren([auditLogs, about]);
+const routeConfig = rootRoute.addChildren([notFound, auditLogs]);
 const router = createReactRouter({ routeConfig });
 
 function App() {

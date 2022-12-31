@@ -38,15 +38,20 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     );
 
   const key = `key_${nanoid()}`;
-  await env.PORTAL_SESSION_EXPIRE_KEY.put(key, organization);
-  const c = await env.PORTAL_SESSION_EXPIRE_KEY.get(key);
-  console.log({ c });
+  const expiryDate = new Date();
+  expiryDate.setMinutes(expiryDate.getMinutes() + 1);
+  const timestamp = expiryDate.getTime() / 1000;
+
+  await env.PORTAL_SESSION_EXPIRE_KEY.put(key, organization, {
+    expiration: timestamp,
+  });
+
   const token = await jwt.sign({ organization, key }, "secret");
 
   const requestUrl = new URL(request.url);
   return new Response(
     JSON.stringify({
-      url: `${requestUrl.origin}?token=${token}`,
+      url: `${requestUrl.origin}/?token=${token}`,
     }),
     {
       headers: { "content-type": "application/json" },
