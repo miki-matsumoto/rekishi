@@ -2,11 +2,7 @@ import { database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 
-export const onRequestGet: PagesFunction<Env> = async ({
-  next,
-  request,
-  env,
-}) => {
+export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
   const notFoundUrl = `${url.origin}/not-found`;
   const searchParams = new URLSearchParams(url.search);
