@@ -26,7 +26,12 @@ const notFound = rootRoute.createRoute({
   component: () => <>not found</>,
 });
 
-const routeConfig = rootRoute.addChildren([notFound, auditLogs]);
+const expired = rootRoute.createRoute({
+  path: "/expired",
+  component: () => <>expired</>,
+});
+
+const routeConfig = rootRoute.addChildren([notFound, auditLogs, expired]);
 const router = createReactRouter({ routeConfig });
 
 function App() {

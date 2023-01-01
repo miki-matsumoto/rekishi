@@ -39,7 +39,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const key = `key_${nanoid()}`;
   const expiryDate = new Date();
-  expiryDate.setMinutes(expiryDate.getMinutes() + 1);
+  expiryDate.setMinutes(expiryDate.getMinutes() + 5);
   const timestamp = expiryDate.getTime() / 1000;
 
   await env.PORTAL_SESSION_EXPIRE_KEY.put(key, organization, {
