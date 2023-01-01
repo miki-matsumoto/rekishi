@@ -15,6 +15,7 @@ specifiers:
   react-dom: ^18.2.0
   typescript: ^4.9.3
   vite: ^4.0.0
+  webcrypt-session: ^0.5.1
   zod: ^3.20.2
 
 dependencies:
@@ -26,6 +27,7 @@ dependencies:
   nanoid: 4.0.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  webcrypt-session: 0.5.1
   zod: 3.20.2
 
 devDependencies:
@@ -482,6 +484,11 @@ packages:
     resolution: {integrity: sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==}
     dev: false
 
+  /cookie/0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
+    engines: {node: '>= 0.6'}
+    dev: false
+
   /css-unit-converter/1.1.2:
     resolution: {integrity: sha512-IiJwMC8rdZE0+xiEZHeru6YoONC4rfPMqGm2W85jMIbkFvv5nFTwJVFHam2eFrN6txmoUYFAFXiv8ICVeTO0MA==}
     dev: false
@@ -919,6 +926,13 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /webcrypt-session/0.5.1:
+    resolution: {integrity: sha512-76o/a76wbb7mvfqrh+Jr49/YnMaOLMugb7bwx84/UYkt78aE/No5ohGVG7RLHLJjeJouiXjMMW+tfFGKfulq+w==}
+    dependencies:
+      cookie: 0.5.0
+      zod: 3.20.2
+    dev: false
 
   /zod/3.20.2:
     resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}

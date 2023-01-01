@@ -1,6 +1,12 @@
 import { database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import jwt from "@tsndr/cloudflare-worker-jwt";
+import { z } from "zod";
+import { createWebCryptSession } from "webcrypt-session";
+
+const sessionSchema = z.object({
+  organization: z.string(),
+});
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
@@ -22,18 +28,31 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   const organization = await db
     .selectFrom("organizations")
-    .select("id")
+    .select("org_id")
     .where("org_id", "=", payload.organization)
     .executeTakeFirst();
 
-  console.log(organization);
   if (!organization) return Response.redirect(notFoundUrl, 302);
+
+  console.log({ organization });
+  const webCryptSession = await createWebCryptSession(sessionSchema, request, {
+    password: "IF4B#t69!WlX$uS22blaxDvzJJ%$vEh%",
+  });
+  console.log(webCryptSession);
+
+  await webCryptSession.save({
+    organization: organization.org_id,
+  });
+  const session = webCryptSession.toHeaderValue();
+
+  console.log({ session });
+  if (!session) return Response.redirect(expiredUrl, 302);
 
   return new Response(null, {
     status: 302,
     headers: {
       Location: `${url.origin}/audit-logs`,
-      "Set-Cookie": "dummy=dummy",
+      "Set-Cookie": session,
     },
   });
 };
