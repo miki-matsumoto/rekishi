@@ -27,7 +27,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     .executeTakeFirst();
 
   console.log(organization);
-  if (!organization) return Response.redirect(notFoundUrl);
+  if (!organization) return Response.redirect(notFoundUrl, 302);
 
   return new Response(null, {
     status: 302,
