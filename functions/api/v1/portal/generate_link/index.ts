@@ -3,6 +3,7 @@ import { database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { nanoid } from "nanoid";
+import { jsonResponse } from "src/lib/response";
 
 const postValidation = z.object({
   organization: z.string().min(1),
@@ -49,12 +50,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const token = await jwt.sign({ organization, key }, "secret");
 
   const requestUrl = new URL(request.url);
-  return new Response(
-    JSON.stringify({
-      url: `${requestUrl.origin}/?token=${token}`,
-    }),
-    {
-      headers: { "content-type": "application/json" },
-    }
-  );
+  return jsonResponse({
+    url: `${requestUrl.origin}/?token=${token}`,
+  });
 };
