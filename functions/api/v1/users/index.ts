@@ -45,7 +45,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       avatar,
       name,
     })
-    .onConflict((oc) => oc.column("user_id").doUpdateSet({ name, avatar }))
+    .onConflict((oc) =>
+      oc
+        .column("user_id")
+        .doUpdateSet({ name: name ?? "", avatar: avatar ?? "" })
+    )
     .returning(["user_id", "avatar", "name"])
     .executeTakeFirst();
 

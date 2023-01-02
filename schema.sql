@@ -21,11 +21,11 @@ CREATE TABLE "audit_logs" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "occurred_at" DATETIME NOT NULL,
     "user_id" TEXT NOT NULL,
-    "contextId" TEXT NOT NULL,
-    "actionName" TEXT NOT NULL,
+    "context_id" TEXT NOT NULL,
+    "action_id" TEXT NOT NULL,
     CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "audit_logs_contextId_fkey" FOREIGN KEY ("contextId") REFERENCES "context" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "audit_logs_actionName_fkey" FOREIGN KEY ("actionName") REFERENCES "actions" ("name") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "audit_logs_context_id_fkey" FOREIGN KEY ("context_id") REFERENCES "context" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "audit_logs_action_id_fkey" FOREIGN KEY ("action_id") REFERENCES "actions" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
