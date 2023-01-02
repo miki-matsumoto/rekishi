@@ -94,26 +94,46 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   if (!context) throw new Error("Error");
 
-  const result = await db
+  const auditLog = await db
     .insertInto("audit_logs")
     .values({
       id: `audit_log_event_${nanoid()}`,
       action_id: action.id,
       user_id: user.id,
-      occurred_at: new Date().toString(),
+      occurred_at: occurred_at?.toString() ?? new Date().toString(),
       context_id: context.id,
     })
     .returningAll()
     .executeTakeFirst();
 
-  if (!result) throw new Error("error");
+  if (!auditLog) throw new Error("error");
+
+  const eventTarget = await Promise.all(
+    targetObjects.map(async ({ id, type }) => {
+      const target = targets.find((target) => target.name === type);
+      if (!target) return;
+
+      return await db
+        .insertInto("event_target")
+        .values({ target_id: target.id, audit_log_id: auditLog.id, id })
+        .returningAll()
+        .executeTakeFirst();
+    })
+  );
+  if (!eventTarget) throw new Error("Error");
 
   const log = await db
     .selectFrom("audit_logs")
-    .where("audit_logs.id", "=", result.id)
+    .where("audit_logs.id", "=", auditLog.id)
     .innerJoin("context", "context.id", "audit_logs.context_id")
-    .select(["audit_logs.id", "context.id as context_id", "audit_logs.user_id"])
+    .innerJoin("event_target", "event_target.audit_log_id", "audit_logs.id")
+    .select([
+      "audit_logs.id",
+      "context.id as context_id",
+      "audit_logs.user_id",
+      "event_target.id as event_target_id",
+    ])
     .executeTakeFirst();
 
-  return jsonResponse(targets);
+  return jsonResponse(log);
 };

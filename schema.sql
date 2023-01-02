@@ -29,6 +29,17 @@ CREATE TABLE "audit_logs" (
 );
 
 -- CreateTable
+CREATE TABLE "event_target" (
+    "id" TEXT NOT NULL,
+    "target_id" TEXT NOT NULL,
+    "audit_log_id" TEXT NOT NULL,
+
+    PRIMARY KEY ("target_id", "audit_log_id"),
+    CONSTRAINT "event_target_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "targets" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "event_target_audit_log_id_fkey" FOREIGN KEY ("audit_log_id") REFERENCES "audit_logs" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "actions" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,

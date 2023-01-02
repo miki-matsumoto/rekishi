@@ -59,8 +59,15 @@ const contextTable = z.object({
   location: z.string().optional(),
   user_agent: z.string().optional(),
 });
-
 type ContextTable = z.infer<typeof contextTable>;
+
+// Event Target
+const eventTargetTable = z.object({
+  id: z.string(),
+  target_id: z.string(),
+  audit_log_id: z.string(),
+});
+type EventTargetTable = z.infer<typeof eventTargetTable>;
 
 type Database = {
   organizations: OrganizationTable;
@@ -70,6 +77,7 @@ type Database = {
   targets_on_actions: TargetsOnActionTable;
   audit_logs: AuditLogTable;
   context: ContextTable;
+  event_target: EventTargetTable;
 };
 
 export const database = (d1: D1Database) =>
