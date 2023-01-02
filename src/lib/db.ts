@@ -36,11 +36,18 @@ const actionTable = z.object({
 
 type ActionTable = z.infer<typeof actionTable>;
 
+const targetsOnActionsTable = z.object({
+  target_id: z.string(),
+  action_id: z.string(),
+});
+type TargetsOnActionTable = z.infer<typeof targetsOnActionsTable>;
+
 type Database = {
   organizations: OrganizationTable;
   users: UserTable;
   actions: ActionTable;
   targets: TargetTable;
+  targets_on_actions: TargetsOnActionTable;
 };
 
 export const database = (d1: D1Database) =>

@@ -42,18 +42,20 @@ CREATE TABLE "targets" (
 );
 
 -- CreateTable
+CREATE TABLE "targets_on_actions" (
+    "target_id" TEXT NOT NULL,
+    "action_id" TEXT NOT NULL,
+
+    PRIMARY KEY ("target_id", "action_id"),
+    CONSTRAINT "targets_on_actions_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "targets" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "targets_on_actions_action_id_fkey" FOREIGN KEY ("action_id") REFERENCES "actions" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "context" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "location" TEXT,
     "user_agent" TEXT
-);
-
--- CreateTable
-CREATE TABLE "_ActionToTarget" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL,
-    CONSTRAINT "_ActionToTarget_A_fkey" FOREIGN KEY ("A") REFERENCES "actions" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "_ActionToTarget_B_fkey" FOREIGN KEY ("B") REFERENCES "targets" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -67,10 +69,4 @@ CREATE UNIQUE INDEX "actions_name_key" ON "actions"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "targets_name_key" ON "targets"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_ActionToTarget_AB_unique" ON "_ActionToTarget"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_ActionToTarget_B_index" ON "_ActionToTarget"("B");
 
