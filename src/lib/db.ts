@@ -21,9 +21,26 @@ const userTable = z.object({
 
 type UserTable = z.infer<typeof userTable>;
 
+const targetTable = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+type TargetTable = z.infer<typeof targetTable>;
+
+const actionTable = z.object({
+  id: z.string(),
+  name: z.string(),
+  title: z.string().optional(),
+});
+
+type ActionTable = z.infer<typeof actionTable>;
+
 type Database = {
   organizations: OrganizationTable;
   users: UserTable;
+  actions: ActionTable;
+  targets: TargetTable;
 };
 
 export const database = (d1: D1Database) =>
