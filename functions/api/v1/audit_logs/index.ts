@@ -6,6 +6,7 @@ import { jsonResponse } from "src/lib/response";
 
 const postInput = z.object({
   action: z.string(),
+  // TODO: z.string() to z.date()
   occurred_at: z.string().optional(),
   actor: z.object({
     id: z.string(),
@@ -92,6 +93,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .returningAll()
     .executeTakeFirst();
 
+  // TODO: Correct response
   if (!context) throw new Error("Error");
 
   const auditLog = await db
@@ -106,6 +108,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .returningAll()
     .executeTakeFirst();
 
+  // TODO: Correct response
   if (!auditLog) throw new Error("error");
 
   const eventTarget = await Promise.all(
@@ -120,8 +123,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         .executeTakeFirst();
     })
   );
+  // TODO: Correct response
   if (!eventTarget) throw new Error("Error");
 
+  // TODO: Correct response
   const log = await db
     .selectFrom("audit_logs")
     .where("audit_logs.id", "=", auditLog.id)
