@@ -33,8 +33,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         .executeTakeFirst();
     })
   );
-  // TODO
-  if (!targets) throw new Error("Get targets failed.");
 
   const nonExistTargets = targetNames.filter(
     (name) => !targets.map((target) => target?.name).includes(name)
