@@ -50,7 +50,6 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       { message: `User ${actor.id} not found` },
       { status: 404 }
     );
-  console.log({ user });
 
   // validate action
   const action = await db
@@ -63,9 +62,25 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       { message: `Action: '${actionName}' not found.` },
       { status: 404 }
     );
-  console.log({ action });
 
   // validate target
+  const targets = await db
+    .selectFrom("targets_on_actions")
+    .where("action_id", "=", action.id)
+    .innerJoin("targets", "targets.id", "targets_on_actions.target_id")
+    .selectAll()
+    .execute();
+
+  const nonExistTargets = targetObjects.filter(
+    ({ type }) => !targets.map((target) => target?.name).includes(type)
+  );
+
+  if (nonExistTargets.length)
+    return jsonResponse({
+      message: `Targets: ${nonExistTargets
+        .map(({ type }) => `'${type}'`)
+        .join(",")} is not defined '${action.name}'.`,
+    });
 
   const context = await db
     .insertInto("context")
@@ -97,7 +112,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .selectFrom("audit_logs")
     .where("audit_logs.id", "=", result.id)
     .innerJoin("context", "context.id", "audit_logs.context_id")
-    .select(["audit_logs.id"])
+    .select(["audit_logs.id", "context.id as context_id", "audit_logs.user_id"])
     .executeTakeFirst();
-  return jsonResponse(log);
+
+  return jsonResponse(targets);
 };
