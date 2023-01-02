@@ -53,6 +53,7 @@ const auditLogTable = z.object({
 });
 type AuditLogTable = z.infer<typeof auditLogTable>;
 
+// TODO: No need? merge to audit_log table.
 // Context
 const contextTable = z.object({
   id: z.string(),
