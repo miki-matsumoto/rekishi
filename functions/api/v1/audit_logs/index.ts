@@ -83,6 +83,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         .join(",")} is not defined '${action.name}'.`,
     });
 
+  // TODO: kysely transaction
+  // https://github.com/aidenwallis/kysely-d1/issues/2
   const context = await db
     .insertInto("context")
     .values({
@@ -109,6 +111,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .executeTakeFirst();
 
   // TODO: Correct response
+  // TODO: transaction delete to context
   if (!auditLog) throw new Error("error");
 
   const eventTarget = await Promise.all(
@@ -124,6 +127,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     })
   );
   // TODO: Correct response
+  // TODO: transaction delete to context and auditLog
   if (!eventTarget) throw new Error("Error");
 
   // TODO: Correct response

@@ -70,7 +70,7 @@ const eventTargetTable = z.object({
 });
 type EventTargetTable = z.infer<typeof eventTargetTable>;
 
-type Database = {
+export type Database = {
   organizations: OrganizationTable;
   users: UserTable;
   actions: ActionTable;

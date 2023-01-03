@@ -1,7 +1,9 @@
 import { z } from "zod";
-import { database } from "src/lib/db";
+import { Database } from "src/lib/db";
 import { nanoid } from "nanoid";
 import { Env } from "src/lib/env";
+import { Kysely } from "kysely";
+import { jsonResponse } from "src/lib/response";
 
 const postInput = z.object({
   org_id: z.string().min(1),
@@ -9,7 +11,11 @@ const postInput = z.object({
   avatar: z.string().url().optional(),
 });
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
+export const onRequestPost: PagesFunction<
+  Env,
+  string,
+  { db: Kysely<Database> }
+> = async ({ request, data }) => {
   const json = await request.json();
   const parsed = postInput.safeParse(json);
 
@@ -24,8 +30,9 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const { org_id, name, avatar } = parsed.data;
 
-  const db = database(env.DB);
-  const data = await db
+  // const db = database(env.DB);
+  const { db } = data;
+  const result = await db
     .insertInto("organizations")
     .values({
       id: `org_${nanoid()}`,
@@ -38,10 +45,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .executeTakeFirst();
 
   // TODO
-  if (!data) throw new Error("Failed");
+  if (!result) throw new Error("Failed");
 
-  return new Response(JSON.stringify(data), {
-    headers: { "content-type": "application/json" },
-    status: 200,
-  });
+  return jsonResponse(result);
 };
