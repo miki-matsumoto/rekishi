@@ -1,7 +1,9 @@
 import { Button, Text } from "@tremor/react";
-import { Link } from "@tanstack/react-router";
+import { trpc } from "src/lib/trpc";
 
 export const AuditLogsPage = () => {
+  const { data } = trpc.hello.useQuery();
+
   return (
     <div>
       <div className="border-b-gray-200 border">
@@ -13,6 +15,7 @@ export const AuditLogsPage = () => {
             size="sm"
           />
           <Text>Powerd by Rekishi</Text>
+          <Text>{data?.hello}</Text>
         </div>
       </div>
     </div>

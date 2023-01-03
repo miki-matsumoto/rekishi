@@ -7,6 +7,7 @@ import {
   createRouteConfig,
 } from "@tanstack/react-router";
 import { AuditLogsPage } from "./pages/audit-logs";
+import { ClientProvider } from "./lib/trpc";
 
 const rootRoute = createRouteConfig({
   component: () => <Outlet />,
@@ -31,7 +32,11 @@ const routeConfig = rootRoute.addChildren([notFound, auditLogs, expired]);
 const router = createReactRouter({ routeConfig });
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ClientProvider>
+      <RouterProvider router={router} />
+    </ClientProvider>
+  );
 }
 
 export default App;
