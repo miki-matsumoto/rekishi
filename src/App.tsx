@@ -1,5 +1,4 @@
 import "@tremor/react/dist/esm/tremor.css";
-import { Button } from "@tremor/react";
 import {
   Outlet,
   RouterProvider,
@@ -7,18 +6,15 @@ import {
   createReactRouter,
   createRouteConfig,
 } from "@tanstack/react-router";
+import { AuditLogsPage } from "./pages/audit-logs";
 
 const rootRoute = createRouteConfig({
-  component: () => (
-    <>
-      <Outlet />
-    </>
-  ),
+  component: () => <Outlet />,
 });
 
 const auditLogs = rootRoute.createRoute({
   path: "/audit-logs",
-  component: () => <>audit logs </>,
+  component: () => <AuditLogsPage />,
 });
 
 const notFound = rootRoute.createRoute({
@@ -35,12 +31,7 @@ const routeConfig = rootRoute.addChildren([notFound, auditLogs, expired]);
 const router = createReactRouter({ routeConfig });
 
 function App() {
-  return (
-    <>
-      <RouterProvider router={router} />
-      <Button text="Button" />
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
