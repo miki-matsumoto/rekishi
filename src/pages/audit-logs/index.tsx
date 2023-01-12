@@ -1,8 +1,21 @@
 import { Button, Text } from "@tremor/react";
 import { trpc } from "src/lib/trpc";
+import { useRouter } from "@tanstack/react-router";
 
 export const AuditLogsPage = () => {
-  const { data } = trpc.hello.useQuery();
+  const { navigate } = useRouter();
+  const { data, isLoading } = trpc.hello.useQuery(
+    // @ts-ignore
+    {},
+    {
+      onError({ data }) {
+        if (data?.code === "UNAUTHORIZED") {
+          navigate({ to: "/expired" });
+        }
+      },
+    }
+  );
+  if (isLoading) return <>Loading.....</>;
 
   return (
     <div>

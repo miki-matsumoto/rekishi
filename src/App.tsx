@@ -9,6 +9,13 @@ import {
 import { AuditLogsPage } from "./pages/audit-logs";
 import { ClientProvider } from "./lib/trpc";
 
+// https://github.com/TanStack/router/issues/414
+declare module "@tanstack/react-router" {
+  interface RegisterRouter {
+    router: typeof router;
+  }
+}
+
 const rootRoute = createRouteConfig({
   component: () => <Outlet />,
 });

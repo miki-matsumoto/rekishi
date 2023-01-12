@@ -11,8 +11,8 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   // expired date
   const date = new Date();
-  // date.setMinutes(date.getMinutes() + 1);
-  date.setDate(date.getDate() + 1);
+  date.setMinutes(date.getMinutes() + 1);
+  // date.setDate(date.getDate() + 1);
 
   const session = await cryptoSession(request);
   if (session.organization)
