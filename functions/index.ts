@@ -34,11 +34,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   await session.save({ organization: organization.org_id });
 
+  // expired date
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+
   return new Response(null, {
     status: 302,
     headers: {
       Location: `${url.origin}/audit-logs`,
-      "Set-Cookie": session.toHeaderValue() ?? "",
+      "Set-Cookie": `${session.toHeaderValue()};Expires=${date.toUTCString()};`,
     },
   });
 };
