@@ -9,6 +9,21 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const expiredUrl = `${url.origin}/expired`;
   const searchParams = new URLSearchParams(url.search);
 
+  // expired date
+  const date = new Date();
+  // date.setMinutes(date.getMinutes() + 1);
+  date.setDate(date.getDate() + 1);
+
+  const session = await cryptoSession(request);
+  if (session.organization)
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: `${url.origin}/audit-logs`,
+        "Set-Cookie": `${session.toHeaderValue()};Expires=${date.toUTCString()};`,
+      },
+    });
+
   const token = searchParams.get("token");
   if (!token) return Response.redirect(notFoundUrl, 302);
 
@@ -29,14 +44,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   if (!organization) return Response.redirect(notFoundUrl, 302);
 
-  const session = await cryptoSession(request);
-  if (!session) return Response.redirect(expiredUrl, 302);
-
   await session.save({ organization: organization.org_id });
-
-  // expired date
-  const date = new Date();
-  date.setDate(date.getDate() + 1);
 
   return new Response(null, {
     status: 302,

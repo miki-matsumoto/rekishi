@@ -8,6 +8,6 @@ export async function createContext({
   env,
 }: FetchCreateContextFnOptions & { env: Env }) {
   const db = database(env.DB);
-  return { req, db };
+  return { request: req, db };
 }
 export type Context = inferAsyncReturnType<typeof createContext>;
