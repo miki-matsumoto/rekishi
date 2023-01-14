@@ -11,6 +11,7 @@ const postInput = z.object({
   actor: z.object({
     id: z.string(),
   }),
+  organizationId: z.string(),
   targets: z.array(z.object({ id: z.string(), type: z.string() })),
   context: z.object({
     location: z.string().optional(),
@@ -37,6 +38,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     targets: targetObjects,
     occurred_at,
     context: contextData,
+    organizationId,
   } = parsed.data;
   const db = database(env.DB);
 
@@ -49,6 +51,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   if (!user)
     return jsonResponse(
       { message: `User ${actor.id} not found` },
+      { status: 404 }
+    );
+
+  const organization = await db
+    .selectFrom("organizations")
+    .where("org_id", "=", organizationId)
+    .selectAll()
+    .executeTakeFirst();
+  if (!organization)
+    return jsonResponse(
+      { message: `Organization ${organizationId} not found.` },
       { status: 404 }
     );
 
@@ -106,6 +119,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       user_id: user.id,
       occurred_at: occurred_at?.toString() ?? new Date().toString(),
       context_id: context.id,
+      organization_id: organization.id,
     })
     .returningAll()
     .executeTakeFirst();
@@ -136,11 +150,17 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .where("audit_logs.id", "=", auditLog.id)
     .innerJoin("context", "context.id", "audit_logs.context_id")
     .innerJoin("event_target", "event_target.audit_log_id", "audit_logs.id")
+    .innerJoin(
+      "organizations",
+      "organizations.id",
+      "audit_logs.organization_id"
+    )
     .select([
       "audit_logs.id",
       "context.id as context_id",
       "audit_logs.user_id",
       "event_target.id as event_target_id",
+      "organizations.org_id",
     ])
     .executeTakeFirst();
 

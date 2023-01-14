@@ -2,6 +2,7 @@ import { database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { cryptoSession } from "src/lib/session";
+import { jsonResponse } from "src/lib/response";
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   const url = new URL(request.url);
@@ -11,12 +12,12 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   // expired date
   const date = new Date();
-  date.setMinutes(date.getMinutes() + 1);
-  // date.setDate(date.getDate() + 1);
+  // date.setMinutes(date.getMinutes() + 1);
+  date.setDate(date.getDate() + 1);
 
   const session = await cryptoSession(request);
   if (session.organization)
-    return new Response(null, {
+    return jsonResponse(null, {
       status: 302,
       headers: {
         Location: `${url.origin}/audit-logs`,
@@ -46,7 +47,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   await session.save({ organization: organization.org_id });
 
-  return new Response(null, {
+  return jsonResponse(null, {
     status: 302,
     headers: {
       Location: `${url.origin}/audit-logs`,
