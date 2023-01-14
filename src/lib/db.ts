@@ -50,6 +50,7 @@ const auditLogTable = z.object({
   user_id: z.string(),
   context_id: z.string(),
   action_id: z.string(),
+  organization_id: z.string(),
 });
 type AuditLogTable = z.infer<typeof auditLogTable>;
 
