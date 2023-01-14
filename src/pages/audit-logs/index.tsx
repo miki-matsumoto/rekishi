@@ -20,7 +20,7 @@ export const AuditLogsPage = () => {
   return (
     <div>
       <Header />
-      // <AuditLogList />
+      <AuditLogList />
     </div>
   );
 };

@@ -9,10 +9,12 @@ CREATE TABLE "organizations" (
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "user_id" TEXT NOT NULL,
     "name" TEXT,
     "avatar" TEXT,
+    "user_id" TEXT NOT NULL,
     "organization_id" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "users_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -33,8 +35,8 @@ CREATE TABLE "audit_logs" (
 -- CreateTable
 CREATE TABLE "event_target" (
     "id" TEXT NOT NULL,
-    "target_id" TEXT NOT NULL,
     "audit_log_id" TEXT NOT NULL,
+    "target_id" TEXT NOT NULL,
 
     PRIMARY KEY ("target_id", "audit_log_id"),
     CONSTRAINT "event_target_audit_log_id_fkey" FOREIGN KEY ("audit_log_id") REFERENCES "audit_logs" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,

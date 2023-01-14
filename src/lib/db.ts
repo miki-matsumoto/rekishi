@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { Kysely } from "kysely";
+import { Kysely, Updateable } from "kysely";
 import { D1Dialect } from "kysely-d1";
+import { DB } from "kysely-codegen";
 
 // Organization
 const organizationTable = z.object({
@@ -46,7 +47,8 @@ type TargetsOnActionTable = z.infer<typeof targetsOnActionsTable>;
 // Audit log
 const auditLogTable = z.object({
   id: z.string(),
-  occurred_at: z.string(),
+  // occurred_at: z.string(),
+  occurred_at: z.any(),
   user_id: z.string(),
   context_id: z.string(),
   action_id: z.string(),
@@ -83,4 +85,4 @@ export type Database = {
 };
 
 export const database = (d1: D1Database) =>
-  new Kysely<Database>({ dialect: new D1Dialect({ database: d1 }) });
+  new Kysely<DB>({ dialect: new D1Dialect({ database: d1 }) });

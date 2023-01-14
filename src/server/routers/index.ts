@@ -13,7 +13,7 @@ const isSession = t.middleware(async ({ ctx, next }) => {
     .executeTakeFirst();
   if (!organization) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-  return next({ ctx: { ...ctx, organization } });
+  return next({ ctx: { ...ctx, organization, session } });
 });
 
 const protectedProcedure = t.procedure.use(isSession);
@@ -30,7 +30,13 @@ export const appRouter = t.router({
       .selectAll()
       .execute();
 
-    return events;
+    const user = await ctx.db
+      .selectFrom("users")
+      .where("organization_id", "=", ctx.organization.id)
+      .orderBy("createdAt", "desc")
+      .selectAll()
+      .execute();
+    return user;
   }),
 });
 

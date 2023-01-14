@@ -44,13 +44,15 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       user_id,
       avatar,
       name,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .onConflict((oc) =>
       oc
         .column("user_id")
         .doUpdateSet({ name: name ?? "", avatar: avatar ?? "" })
     )
-    .returning(["user_id", "avatar", "name"])
+    .returningAll()
     .executeTakeFirst();
 
   // TODO
