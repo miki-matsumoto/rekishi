@@ -1,5 +1,4 @@
 import { z, ZodSchema } from "zod";
-import { Database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import { Kysely } from "kysely";
 import { jsonResponse } from "src/lib/response";
