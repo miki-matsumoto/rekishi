@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "migrate:local": "wrangler d1 execute rekishi_d1 --local --file=./schema.sql",
     "codegen": "kysely-codegen --out-file ./src/lib/schema.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
   },
   "dependencies": {
     "@tanstack/react-query": "^4.20.4",
@@ -36,12 +38,14 @@
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.9",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "@vitest/ui": "^0.27.2",
     "autoprefixer": "^10.4.13",
     "kysely-codegen": "^0.9.0",
     "postcss": "^8.4.20",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.3",
     "vite": "^4.0.0",
-    "vite-tsconfig-paths": "^4.0.3"
+    "vite-tsconfig-paths": "^4.0.3",
+    "vitest": "^0.27.2"
   }
 }
