@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpx wrangler pages dev --kv PORTAL_SESSION_EXPIRE_KEY --local --persist -- pnpm dev:vite",
     "dev:vite": "vite",
-    "build": "codegen && tsc &&vite build",
+    "build": "kysely-codegen && tsc &&vite build",
     "preview": "vite preview",
     "migrate:local": "wrangler d1 execute rekishi_d1 --local --file=./schema.sql",
     "codegen": "kysely-codegen",
