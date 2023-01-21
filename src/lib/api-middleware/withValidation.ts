@@ -2,7 +2,7 @@ import { z, ZodSchema } from "zod";
 import { Env } from "src/lib/env";
 import { Kysely } from "kysely";
 import { jsonResponse } from "src/lib/response";
-import { DB } from "kysely-codegen";
+import { DB } from "src/lib/schema";
 
 type Context<T extends ZodSchema = never> = EventContext<
   Env,
