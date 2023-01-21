@@ -3,11 +3,12 @@ import { Database } from "src/lib/db";
 import { Env } from "src/lib/env";
 import { Kysely } from "kysely";
 import { jsonResponse } from "src/lib/response";
+import { DB } from "kysely-codegen";
 
 type Context<T extends ZodSchema = never> = EventContext<
   Env,
   string,
-  { db: Kysely<Database>; body: z.infer<T> }
+  { db: Kysely<DB>; body: z.infer<T> }
 >;
 
 export function withValidation<T extends ZodSchema>(

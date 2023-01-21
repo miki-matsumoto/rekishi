@@ -120,6 +120,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       occurred_at: occurred_at?.toString() ?? new Date().toString(),
       context_id: context.id,
       organization_id: organization.id,
+      created_at: new Date().toISOString(),
     })
     .returningAll()
     .executeTakeFirst();

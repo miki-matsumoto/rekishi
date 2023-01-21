@@ -33,7 +33,7 @@ export const appRouter = t.router({
     const user = await ctx.db
       .selectFrom("users")
       .where("organization_id", "=", ctx.organization.id)
-      .orderBy("createdAt", "desc")
+      .orderBy("created_at", "desc")
       .selectAll()
       .execute();
     return user;

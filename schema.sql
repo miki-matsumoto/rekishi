@@ -3,7 +3,9 @@ CREATE TABLE "organizations" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "org_id" TEXT NOT NULL,
     "name" TEXT,
-    "avatar" TEXT
+    "avatar" TEXT,
+    "created_at" DATETIME NOT NULL,
+    "updated_at" DATETIME NOT NULL
 );
 
 -- CreateTable
@@ -13,8 +15,8 @@ CREATE TABLE "users" (
     "avatar" TEXT,
     "user_id" TEXT NOT NULL,
     "organization_id" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "created_at" DATETIME NOT NULL,
+    "updated_at" DATETIME NOT NULL,
     CONSTRAINT "users_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -26,6 +28,7 @@ CREATE TABLE "audit_logs" (
     "context_id" TEXT NOT NULL,
     "organization_id" TEXT,
     "action_id" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL,
     CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "audit_logs_context_id_fkey" FOREIGN KEY ("context_id") REFERENCES "context" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "audit_logs_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
@@ -47,13 +50,17 @@ CREATE TABLE "event_target" (
 CREATE TABLE "actions" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "title" TEXT
+    "title" TEXT,
+    "created_at" DATETIME NOT NULL,
+    "updated_at" DATETIME NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "targets" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT NOT NULL
+    "name" TEXT NOT NULL,
+    "created_at" DATETIME NOT NULL,
+    "updated_at" DATETIME NOT NULL
 );
 
 -- CreateTable

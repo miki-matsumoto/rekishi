@@ -33,7 +33,12 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
 
   const result = await db
     .insertInto("targets")
-    .values({ id: `target_${nanoid()}`, name })
+    .values({
+      id: `target_${nanoid()}`,
+      name,
+      created_at: new Date().toDateString(),
+      updated_at: new Date().toISOString(),
+    })
     .returningAll()
     .executeTakeFirst();
 

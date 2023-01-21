@@ -19,9 +19,15 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
       org_id,
       name,
       avatar,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
-    .onConflict((oc) => oc.column("org_id").doUpdateSet({ name, avatar }))
-    .returning(["org_id", "name", "avatar"])
+    .onConflict((oc) =>
+      oc
+        .column("org_id")
+        .doUpdateSet({ name, avatar, updated_at: new Date().toISOString() })
+    )
+    .returningAll()
     .executeTakeFirst();
 
   // TODO

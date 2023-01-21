@@ -78,6 +78,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       id: `action_${nanoid()}`,
       name,
       title,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
     .onConflict((oc) => oc.column("name").doUpdateSet({ title }))
     .returningAll()
