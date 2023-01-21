@@ -1,7 +1,6 @@
-import { z } from "zod";
 import { Kysely, Updateable } from "kysely";
 import { D1Dialect } from "kysely-d1";
-import { DB } from "kysely-codegen";
+import { DB } from "src/lib/schema";
 
 // Organization
 // const organizationTable = z.object({
