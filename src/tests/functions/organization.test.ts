@@ -1,4 +1,4 @@
-import { run, Workflow, Test, WorkflowConfig } from "@stepci/runner";
+import { run, Workflow, Test } from "@stepci/runner";
 import { nanoid } from "nanoid";
 import { expect, it } from "vitest";
 import { config } from "src/tests/functions/utils";

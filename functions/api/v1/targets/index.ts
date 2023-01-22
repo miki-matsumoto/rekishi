@@ -17,18 +17,14 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
     .selectAll()
     .executeTakeFirst();
 
-  if (existTarget)
-    return jsonResponse(
-      { message: `Target '${name}' is already exist` },
-      { status: 409 }
-    );
+  if (existTarget) return jsonResponse(existTarget);
 
   const result = await db
     .insertInto("targets")
     .values({
       id: `target_${nanoid()}`,
       name,
-      created_at: new Date().toDateString(),
+      created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     })
     .returningAll()
