@@ -23,6 +23,23 @@ const create: Test = {
   ],
 };
 
+const emptyName: Test = {
+  steps: [
+    {
+      http: {
+        url: "/api/v1/targets",
+        method: "POST",
+        json: {
+          name: "",
+        },
+        check: {
+          status: 400,
+        },
+      },
+    },
+  ],
+};
+
 it("Targets", async () => {
   const workflow: Workflow = {
     name: "Create target",
@@ -30,6 +47,7 @@ it("Targets", async () => {
     config,
     tests: {
       create,
+      emptyName,
     },
   };
   const { result } = await run(workflow);
