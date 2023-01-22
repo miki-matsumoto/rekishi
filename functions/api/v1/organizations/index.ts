@@ -12,6 +12,7 @@ const postInput = z.object({
 export const onRequestPost = withValidation(postInput, async ({ data }) => {
   const { org_id, name, avatar } = data.body;
   const { db } = data;
+
   const result = await db
     .insertInto("organizations")
     .values({
@@ -27,11 +28,14 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
         .column("org_id")
         .doUpdateSet({ name, avatar, updated_at: new Date().toISOString() })
     )
-    .returningAll()
+    .returning(["org_id", "name", "avatar", "created_at", "updated_at"])
     .executeTakeFirst();
 
-  // TODO
-  if (!result) throw new Error("Failed");
+  if (!result)
+    jsonResponse({
+      status: 500,
+      message: "Internal server error",
+    });
 
   return jsonResponse(result);
 });

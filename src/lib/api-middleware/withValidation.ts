@@ -16,17 +16,20 @@ export function withValidation<T extends ZodSchema>(
 ) {
   return async (context: Context<T>) => {
     const json = await context.request.json();
+    console.log(json);
     const parsed = schema.safeParse(json);
     if (!parsed.success) {
       const { issues } = parsed.error;
-      return jsonResponse({
-        status: 400,
-        error: {
-          path: issues[0].path[0],
-          message: issues[0].message,
-          code: issues[0].code,
+      return jsonResponse(
+        {
+          error: {
+            path: issues[0].path,
+            message: issues[0].message,
+            code: issues[0].code,
+          },
         },
-      });
+        { status: 400 }
+      );
     }
 
     context.data.body = parsed.data;
