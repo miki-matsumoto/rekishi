@@ -28,7 +28,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   const db = database(env.DB);
   const org = await db
     .selectFrom("organizations")
-    .where("org_id", "=", parsed.data.organization)
+    .where("organization_id", "=", parsed.data.organization)
     .select("id")
     .executeTakeFirst();
 

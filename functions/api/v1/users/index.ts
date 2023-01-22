@@ -5,7 +5,7 @@ import { withValidation } from "src/lib/api-middleware/withValidation";
 
 const postValidation = z.object({
   user_id: z.string().min(1),
-  org_id: z.string().min(1),
+  organization_id: z.string().min(1),
   name: z.string().optional(),
   avatar: z.string().optional(),
 });
@@ -13,20 +13,20 @@ const postValidation = z.object({
 export const onRequestPost = withValidation(
   postValidation,
   async ({ data }) => {
-    const { org_id, name, avatar, user_id } = data.body;
+    const { organization_id, name, avatar, user_id } = data.body;
 
     const { db } = data;
 
     const org = await db
       .selectFrom("organizations")
       .select("id")
-      .where("org_id", "=", org_id)
+      .where("organization_id", "=", organization_id)
       .executeTakeFirst();
 
     if (!org)
       return jsonResponse(
         {
-          message: `No such organization '${org_id}'`,
+          message: `No such organization '${organization_id}'`,
         },
         { status: 404 }
       );

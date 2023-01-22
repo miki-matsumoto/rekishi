@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "organizations" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "org_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "name" TEXT,
     "avatar" TEXT,
     "created_at" DATETIME NOT NULL,
@@ -26,12 +26,12 @@ CREATE TABLE "audit_logs" (
     "occurred_at" DATETIME NOT NULL,
     "user_id" TEXT NOT NULL,
     "context_id" TEXT NOT NULL,
-    "organization_id" TEXT,
+    "organization_id" TEXT NOT NULL,
     "action_id" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL,
     CONSTRAINT "audit_logs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "audit_logs_context_id_fkey" FOREIGN KEY ("context_id") REFERENCES "context" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "audit_logs_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "audit_logs_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "audit_logs_action_id_fkey" FOREIGN KEY ("action_id") REFERENCES "actions" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
@@ -81,7 +81,7 @@ CREATE TABLE "context" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "organizations_org_id_key" ON "organizations"("org_id");
+CREATE UNIQUE INDEX "organizations_organization_id_key" ON "organizations"("organization_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_user_id_key" ON "users"("user_id");

@@ -8,7 +8,7 @@ const isSession = t.middleware(async ({ ctx, next }) => {
 
   const organization = await ctx.db
     .selectFrom("organizations")
-    .where("org_id", "=", session.organization)
+    .where("organization_id", "=", session.organization)
     .selectAll()
     .executeTakeFirst();
   if (!organization) throw new TRPCError({ code: "UNAUTHORIZED" });

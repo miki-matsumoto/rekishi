@@ -39,13 +39,13 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
 
   const organization = await db
     .selectFrom("organizations")
-    .select("org_id")
-    .where("org_id", "=", payload.organization)
+    .select("organization_id")
+    .where("organization_id", "=", payload.organization)
     .executeTakeFirst();
 
   if (!organization) return Response.redirect(notFoundUrl, 302);
 
-  await session.save({ organization: organization.org_id });
+  await session.save({ organization: organization.organization_id });
 
   return jsonResponse(null, {
     status: 302,

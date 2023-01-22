@@ -1,9 +1,8 @@
 import { run, Workflow, Test } from "@stepci/runner";
-import { nanoid } from "nanoid";
 import { expect, it } from "vitest";
 import { config } from "src/tests/functions/utils";
 
-const create = (org_id: string): Test => {
+const create = (organization_id: string): Test => {
   return {
     steps: [
       {
@@ -12,7 +11,7 @@ const create = (org_id: string): Test => {
           url: "/api/v1/users",
           method: "POST",
           json: {
-            org_id,
+            organization_id,
             user_id: "user_id",
             name: "Rekishi user",
             avatar:
@@ -41,7 +40,7 @@ const noExistOrganiaztion: Test = {
         url: "/api/v1/users",
         method: "POST",
         json: {
-          org_id: "dummy_org_id",
+          organization_id: "dummy_org_id",
           user_id: "user_id",
           name: "Rekishi user",
           avatar:
@@ -60,14 +59,14 @@ const noExistOrganiaztion: Test = {
 
 it("Users", async () => {
   // TODO
-  const org_id = "CfPFd1wE6ssPjHhQrK6FD";
+  const organization_id = "NqD_ePpO2Dvkvq11xxsssxxQjcq-ms";
 
   const workflow: Workflow = {
     name: "Create user",
     version: "1",
     config,
     tests: {
-      create: create(org_id),
+      create: create(organization_id),
       noExistOrganiaztion,
     },
   };

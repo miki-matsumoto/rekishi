@@ -12,7 +12,7 @@ export interface AuditLogs {
   created_at: string;
   id: string;
   occurred_at: string;
-  organization_id: string | null;
+  organization_id: string;
   user_id: string;
 }
 
@@ -33,7 +33,7 @@ export interface Organizations {
   created_at: string;
   id: string;
   name: string | null;
-  org_id: string;
+  organization_id: string;
   updated_at: string;
 }
 

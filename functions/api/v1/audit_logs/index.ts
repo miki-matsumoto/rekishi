@@ -11,7 +11,7 @@ const postInput = z.object({
   actor: z.object({
     id: z.string(),
   }),
-  organizationId: z.string(),
+  organization_id: z.string(),
   targets: z.array(z.object({ id: z.string(), type: z.string() })),
   context: z.object({
     location: z.string().optional(),
@@ -28,7 +28,7 @@ export const onRequestPost = withValidation(
       targets: targetObjects,
       occurred_at,
       context: contextData,
-      organizationId,
+      organization_id,
     } = data.body;
     const db = database(env.DB);
 
@@ -46,12 +46,12 @@ export const onRequestPost = withValidation(
 
     const organization = await db
       .selectFrom("organizations")
-      .where("org_id", "=", organizationId)
+      .where("organization_id", "=", organization_id)
       .selectAll()
       .executeTakeFirst();
     if (!organization)
       return jsonResponse(
-        { message: `Organization ${organizationId} not found.` },
+        { message: `Organization ${organization_id} not found.` },
         { status: 404 }
       );
 
@@ -149,11 +149,11 @@ export const onRequestPost = withValidation(
         "audit_logs.organization_id"
       )
       .select([
+        "organizations.organization_id",
         "audit_logs.id",
         "context.id as context_id",
         "audit_logs.user_id",
         "event_target.id as event_target_id",
-        "organizations.org_id",
         "occurred_at",
       ])
       .executeTakeFirst();
