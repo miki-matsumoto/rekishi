@@ -1,10 +1,7 @@
 import { run, Workflow, Test, WorkflowConfig } from "@stepci/runner";
 import { nanoid } from "nanoid";
 import { expect, it } from "vitest";
-
-const config: WorkflowConfig = {
-  http: { baseURL: "http://127.0.0.1:8788" },
-};
+import { config } from "src/tests/functions/utils";
 
 const create = (org_id: string): Test => {
   return {

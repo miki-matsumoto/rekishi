@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { nanoid } from "nanoid";
-import { jsonResponse } from "src/lib/response";
+import { internalServerErrorResponse, jsonResponse } from "src/lib/response";
 import { withValidation } from "src/lib/api-middleware/withValidation";
 
 const postInput = z.object({
@@ -31,11 +31,7 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
     .returning(["org_id", "name", "avatar", "created_at", "updated_at"])
     .executeTakeFirst();
 
-  if (!result)
-    jsonResponse({
-      status: 500,
-      message: "Internal server error",
-    });
+  if (!result) return internalServerErrorResponse();
 
   return jsonResponse(result);
 });
