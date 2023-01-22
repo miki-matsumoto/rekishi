@@ -18,9 +18,14 @@ export function withValidation<T extends ZodSchema>(
     const json = await context.request.json();
     const parsed = schema.safeParse(json);
     if (!parsed.success) {
+      const { issues } = parsed.error;
       return jsonResponse({
-        message: "Bad Request",
-        issues: JSON.parse(parsed.error.message),
+        status: 400,
+        error: {
+          path: issues[0].path[0],
+          message: issues[0].message,
+          code: issues[0].code,
+        },
       });
     }
 

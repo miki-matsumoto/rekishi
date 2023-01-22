@@ -30,13 +30,7 @@ export const appRouter = t.router({
       .selectAll()
       .execute();
 
-    const user = await ctx.db
-      .selectFrom("users")
-      .where("organization_id", "=", ctx.organization.id)
-      .orderBy("created_at", "desc")
-      .selectAll()
-      .execute();
-    return user;
+    return events;
   }),
 });
 
