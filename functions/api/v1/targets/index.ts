@@ -1,26 +1,15 @@
 import { z } from "zod";
-import { database } from "src/lib/db";
 import { nanoid } from "nanoid";
-import { Env } from "src/lib/env";
 import { jsonResponse } from "src/lib/response";
+import { withValidation } from "src/lib/api-middleware/withValidation";
 
 const postInput = z.object({
   name: z.string().min(1),
 });
 
-export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
-  const json = await request.json();
-  const parsed = postInput.safeParse(json);
-
-  if (!parsed.success)
-    return jsonResponse(
-      { message: "Bad Request", issues: JSON.parse(parsed.error.message) },
-      { status: 400, headers: { "content-type": "application/json" } }
-    );
-
-  const { name } = parsed.data;
-
-  const db = database(env.DB);
+export const onRequestPost = withValidation(postInput, async ({ data }) => {
+  const { name } = data.body;
+  const { db } = data;
 
   const existTarget = await db
     .selectFrom("targets")
@@ -28,8 +17,11 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .selectAll()
     .executeTakeFirst();
 
-  // TODO
-  if (existTarget) throw new Error("Error.");
+  if (existTarget)
+    return jsonResponse(
+      { message: `Target '${name}' is already exist` },
+      { status: 409 }
+    );
 
   const result = await db
     .insertInto("targets")
@@ -43,4 +35,4 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     .executeTakeFirst();
 
   return jsonResponse(result);
-};
+});
