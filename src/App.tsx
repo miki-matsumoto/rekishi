@@ -1,4 +1,3 @@
-import "@tremor/react/dist/esm/tremor.css";
 import {
   Outlet,
   RouterProvider,
