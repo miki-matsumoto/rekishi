@@ -44,6 +44,7 @@ export const onRequestPost = withValidation(
         { status: 404 }
       );
 
+    // validate organization
     const organization = await db
       .selectFrom("organizations")
       .where("organization_id", "=", organization_id)
