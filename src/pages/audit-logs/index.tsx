@@ -26,7 +26,12 @@ export const AuditLogsPage = () => {
   return (
     <div>
       <Header />
-      <Table auditLogs={data} />
+      <div className="max-w-5xl mx-auto">
+        <h3 className="my-8 scroll-m-20 text-2xl font-semibold tracking-tight">
+          Audit Logs
+        </h3>
+        <Table auditLogs={data} />
+      </div>
     </div>
   );
 };
@@ -50,7 +55,7 @@ type Props = {
 };
 
 const Table = ({ auditLogs }: Props) => (
-  <div className="relative overflow-x-auto sm:rounded-md max-w-5xl mx-auto border-t border-l border-r my-6">
+  <div className="relative overflow-x-auto sm:rounded-md border-t border-l border-r">
     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <TableHeader />
       <tbody>

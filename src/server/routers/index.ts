@@ -31,17 +31,20 @@ export const appRouter = t.router({
       .innerJoin("actions", "actions.id", "audit_logs.action_id")
       .select([
         "audit_logs.id",
+        "occurred_at",
         // user
         "users.name as userName",
         // action
         "actions.name as actionName",
         "actions.title as actionTitle",
       ])
+      .orderBy("occurred_at", "desc")
       .execute();
 
     console.log({ events });
     return events.map((event) => ({
       id: event.id,
+      occurred_at: event.occurred_at,
       user: {
         name: event.userName,
       },

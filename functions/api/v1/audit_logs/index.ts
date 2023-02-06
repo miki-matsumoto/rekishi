@@ -3,6 +3,7 @@ import { database } from "src/lib/db";
 import { nanoid } from "nanoid";
 import { jsonResponse } from "src/lib/response";
 import { withValidation } from "src/lib/api-middleware/withValidation";
+import formatISO from "date-fns/formatISO";
 
 const postInput = z.object({
   action: z.string(),
@@ -106,12 +107,10 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
       id: `audit_log_event_${nanoid()}`,
       action_id: action.id,
       user_id: user.id,
-      occurred_at: occurred_at
-        ? occurred_at.toISOString()
-        : new Date().toISOString(),
+      occurred_at: occurred_at ? formatISO(occurred_at) : formatISO(new Date()),
       context_id: context.id,
       organization_id: organization.id,
-      created_at: new Date().toISOString(),
+      created_at: formatISO(new Date()),
     })
     .returningAll()
     .executeTakeFirst();
