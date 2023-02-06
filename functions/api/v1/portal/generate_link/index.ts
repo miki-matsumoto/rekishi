@@ -3,6 +3,7 @@ import jwt from "@tsndr/cloudflare-worker-jwt";
 import { nanoid } from "nanoid";
 import { jsonResponse } from "src/lib/response";
 import { withValidation } from "src/lib/api-middleware/withValidation";
+import formatISO from "date-fns/formatISO";
 
 const postValidation = z.object({
   organization: z.string().min(1),
@@ -11,6 +12,10 @@ const postValidation = z.object({
 export const onRequestPost = withValidation(
   postValidation,
   async ({ request, data, env }) => {
+    console.log("---------------------------");
+    console.log(formatISO(new Date()));
+    console.log(new Date());
+    console.log("---------------------------");
     const { organization } = data.body;
     const org = await data.db
       .selectFrom("organizations")
