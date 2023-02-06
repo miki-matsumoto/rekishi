@@ -15,6 +15,8 @@ export const onRequestPost = withValidation(
     console.log("---------------------------");
     console.log(formatISO(new Date()));
     console.log(new Date());
+    let timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log(timeZone);
     console.log("---------------------------");
     const { organization } = data.body;
     const org = await data.db
