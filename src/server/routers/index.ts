@@ -26,11 +26,30 @@ export const appRouter = t.router({
   auditLogEvents: protectedProcedure.query(async ({ ctx }) => {
     const events = await ctx.db
       .selectFrom("audit_logs")
-      .where("organization_id", "=", ctx.organization.id)
-      .selectAll()
+      .where("audit_logs.organization_id", "=", ctx.organization.id)
+      .innerJoin("users", "users.id", "audit_logs.user_id")
+      .innerJoin("actions", "actions.id", "audit_logs.action_id")
+      .select([
+        "audit_logs.id",
+        // user
+        "users.name as userName",
+        // action
+        "actions.name as actionName",
+        "actions.title as actionTitle",
+      ])
       .execute();
 
-    return events;
+    console.log({ events });
+    return events.map((event) => ({
+      id: event.id,
+      user: {
+        name: event.userName,
+      },
+      action: {
+        title: event.actionTitle,
+        name: event.actionName,
+      },
+    }));
   }),
 });
 
