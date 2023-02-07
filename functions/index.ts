@@ -20,7 +20,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     return jsonResponse(null, {
       status: 302,
       headers: {
-        Location: `${url.origin}/audit-logs`,
+        Location: `${url.origin}/audit-logs/events`,
         "Set-Cookie": `${session.toHeaderValue()};Expires=${date.toUTCString()};`,
       },
     });
@@ -50,7 +50,7 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
   return jsonResponse(null, {
     status: 302,
     headers: {
-      Location: `${url.origin}/audit-logs`,
+      Location: `${url.origin}/audit-logs/events`,
       "Set-Cookie": `${session.toHeaderValue()};Expires=${date.toUTCString()};`,
     },
   });
