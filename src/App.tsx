@@ -39,9 +39,11 @@ const router = createReactRouter({ routeConfig });
 
 function App() {
   return (
-    <ClientProvider>
-      <RouterProvider router={router} />
-    </ClientProvider>
+    <div className="font-inter">
+      <ClientProvider>
+        <RouterProvider router={router} />
+      </ClientProvider>
+    </div>
   );
 }
 
