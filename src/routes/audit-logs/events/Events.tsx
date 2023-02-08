@@ -84,7 +84,7 @@ const Table = ({ auditLogs }: Props) => (
             <td className="px-6 py-4 opacity-0 group-hover:opacity-100">
               <Link
                 to="/audit-logs/events/$event"
-                params={{ event: "123" }}
+                params={{ event: id }}
                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               >
                 View detail
