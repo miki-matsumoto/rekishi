@@ -1,9 +1,7 @@
 import { trpc } from "src/lib/trpc";
-import { Link, Route, useRouter } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { Outputs } from "src/server/trpc";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
-import { layoutRoute } from "../../layouts";
-
 
 type AuditLog = Outputs["auditLogEvents"][0];
 
@@ -14,8 +12,9 @@ export default function AuditLogsPage() {
     {},
     {
       onError({ data }) {
+        console.log(data);
         if (data?.code === "UNAUTHORIZED") {
-          navigate({});
+          navigate({ to: "/expired" });
         }
       },
     }
@@ -85,7 +84,7 @@ const Table = ({ auditLogs }: Props) => (
             <td className="px-6 py-4 opacity-0 group-hover:opacity-100">
               <Link
                 to="/audit-logs/events/$event"
-                params={{event: "123"}}
+                params={{ event: "123" }}
                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               >
                 View detail
