@@ -1,11 +1,10 @@
-import { createTRPCReact } from "@trpc/react-query";
+import { createTRPCReact, createTRPCProxyClient } from "@trpc/react-query";
 import { AppRouter } from "src/server/routers";
 import {
   QueryCache,
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { useState } from "react";
 import superjson from "superjson";
@@ -20,9 +19,19 @@ export const trpc = createTRPCReact<
   "ExperimentalSuspense"
 >();
 
-export function ClientProvider(props: { children: React.ReactNode }) {
-  //  const { navigate } = useRouter();
+export const trpcClient = createTRPCProxyClient<AppRouter>({
+  links: [
+    loggerLink({
+      enabled: () => true,
+    }),
+    httpBatchLink({
+      url: "/trpc",
+    }),
+  ],
+  transformer: superjson,
+});
 
+export function ClientProvider(props: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -34,15 +43,6 @@ export function ClientProvider(props: { children: React.ReactNode }) {
             staleTime: Infinity,
           },
         },
-        queryCache: new QueryCache({
-          onError(error) {
-            // @ts-ignore
-            // if (error.message === "UNAUTHORIZED") {
-            //   console.log("from config");
-            //   navigate({ to: "/not-found" });
-            // }
-          },
-        }),
       })
   );
   const [trpcClient] = useState(() =>
