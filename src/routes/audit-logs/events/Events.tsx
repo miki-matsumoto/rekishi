@@ -35,8 +35,7 @@ const EventTable = () => {
       },
     }
   );
-  console.log("data from EventTable");
-  console.log({ dataQuery });
+  console.log(dataQuery.isFetching);
 
   return <Table auditLogs={data} />;
 };

@@ -16,7 +16,7 @@ const Header = () => (
         <ChevronLeft className="mr-2 h-4 w-4" />
         Back to App
       </Button>
-      <small className="text-sm font-medium leading-none">
+      <small className="text-sm font-normal leading-none  text-slate-500">
         Powerd by Rekishi
       </small>
     </div>

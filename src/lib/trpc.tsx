@@ -27,7 +27,12 @@ export function ClientProvider(props: { children: React.ReactNode }) {
     () =>
       new QueryClient({
         defaultOptions: {
-          queries: { refetchOnWindowFocus: false, retry: false },
+          queries: {
+            refetchOnWindowFocus: false,
+            retry: false,
+            cacheTime: Infinity,
+            staleTime: Infinity,
+          },
         },
         queryCache: new QueryCache({
           onError(error) {
