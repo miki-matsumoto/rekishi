@@ -2,12 +2,28 @@ import { trpc } from "src/lib/trpc";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Outputs } from "src/server/trpc";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
+import { Suspense } from "react";
 
 type AuditLog = Outputs["auditLogEvents"][0];
 
-export default function AuditLogsPage() {
+export default function EventsPage() {
+  return (
+    <div>
+      <div className="max-w-5xl mx-auto">
+        <h3 className="my-8 scroll-m-20 text-2xl font-semibold tracking-tight">
+          Audit Logs
+        </h3>
+        <Suspense fallback={<div>Loading... from suspense</div>}>
+          <EventTable />
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+
+const EventTable = () => {
   const { navigate } = useRouter();
-  const { data, isLoading } = trpc.auditLogEvents.useQuery(
+  const [data, dataQuery] = trpc.auditLogEvents.useSuspenseQuery(
     // @ts-ignore
     {},
     {
@@ -19,20 +35,11 @@ export default function AuditLogsPage() {
       },
     }
   );
-  if (isLoading) return <>Loading.....</>;
-  if (!data) return null;
+  console.log("data from EventTable");
+  console.log({ dataQuery });
 
-  return (
-    <div>
-      <div className="max-w-5xl mx-auto">
-        <h3 className="my-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-          Audit Logs
-        </h3>
-        <Table auditLogs={data} />
-      </div>
-    </div>
-  );
-}
+  return <Table auditLogs={data} />;
+};
 
 type Props = {
   auditLogs: AuditLog[];
@@ -55,7 +62,11 @@ const Table = ({ auditLogs }: Props) => (
               <Avatar>
                 <AvatarImage />
                 <AvatarFallback>
-                  {user.name ? user.name[0] : "k"}
+                  {/* 
+                      TODO: replace user email
+                      {user.name[0] ?? user.email[0] ?? ""}
+                   */}
+                  {user.name ? user.name[0] : ""}
                 </AvatarFallback>
               </Avatar>
               <div className="pl-3">

@@ -10,12 +10,15 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { useState } from "react";
 import superjson from "superjson";
 import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { useRouter } from "@tanstack/react-router";
 
 export type Inputs = inferRouterInputs<AppRouter>;
 export type Outputs = inferRouterOutputs<AppRouter>;
 
-export const trpc = createTRPCReact<AppRouter>();
+export const trpc = createTRPCReact<
+  AppRouter,
+  unknown,
+  "ExperimentalSuspense"
+>();
 
 export function ClientProvider(props: { children: React.ReactNode }) {
   //  const { navigate } = useRouter();
