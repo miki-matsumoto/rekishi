@@ -31,10 +31,7 @@ export const trpcClient = createTRPCProxyClient<AppRouter>({
   transformer: superjson,
 });
 
-export function ClientProvider(props: { children: React.ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
+export const fetchQueryClient = new QueryClient({
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
@@ -44,6 +41,10 @@ export function ClientProvider(props: { children: React.ReactNode }) {
           },
         },
       })
+
+export function ClientProvider(props: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () => fetchQueryClient
   );
   const [trpcClient] = useState(() =>
     trpc.createClient({

@@ -10,7 +10,7 @@ import { eventLoader } from ".";
 
 
 export default function Event() {
-  const {state: {data}} = useLoaderInstance({key: eventLoader.key})
+  const {data } = trpc.hello.useQuery()
 
   return <>Event, {JSON.stringify(data)}</>;
 }
