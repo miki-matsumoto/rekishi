@@ -1,6 +1,6 @@
 import { rootRoute } from "src/routes/root";
 import { ReactRouter } from "@tanstack/react-router";
-import { eventLoader, eventRoute } from "./audit-logs/events/event";
+import { eventRoute } from "./audit-logs/events/event";
 import { layoutRoute } from "./layouts";
 import { auditLogsRoute } from "./audit-logs";
 import { eventsRoute } from "./audit-logs/events";
@@ -18,16 +18,16 @@ const routeTree = rootRoute.addChildren([
 
 export const router = new ReactRouter({
   routeTree,
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
 });
 
-export const loaderClient = new LoaderClient({
-  getLoaders: () => [eventLoader],
-})
+// export const loaderClient = new LoaderClient({
+//   getLoaders: () => [eventLoader],
+// })
 
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof router;
-    loaderClient: typeof loaderClient
+    // loaderClient: typeof loaderClient;
   }
 }
