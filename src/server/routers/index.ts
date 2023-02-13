@@ -1,5 +1,4 @@
 import { TRPCError } from "@trpc/server";
-import { sql } from "kysely";
 import { cryptoSession } from "src/lib/session";
 import { t } from "src/server/trpc";
 import { z } from "zod";
@@ -27,17 +26,17 @@ export const appRouter = t.router({
   }),
   auditLogEvents: protectedProcedure.query(async ({ ctx }) => {
     const events = await ctx.db
-      .selectFrom("audit_logs")
-      .where("audit_logs.organization_id", "=", ctx.organization.id)
-      .innerJoin("users", "users.id", "audit_logs.user_id")
-      .innerJoin("actions", "actions.id", "audit_logs.action_id")
+      .selectFrom("events")
+      .where("events.organization_id", "=", ctx.organization.id)
+      .innerJoin("users", "users.id", "events.user_id")
+      .innerJoin("actions", "actions.id", "events.action_id")
       .select([
-        "audit_logs.id",
+        "events.id",
         "occurred_at",
         // user
         "users.name as userName",
         // action
-        "actions.name as actionName",
+        "actions.code as actionCode",
         "actions.title as actionTitle",
       ])
       .orderBy("occurred_at", "desc")
@@ -51,7 +50,7 @@ export const appRouter = t.router({
       },
       action: {
         title: event.actionTitle,
-        name: event.actionName,
+        code: event.actionCode,
       },
     }));
   }),
@@ -59,40 +58,54 @@ export const appRouter = t.router({
     .input(z.object({ eventId: z.string() }))
     .query(async ({ ctx, input }) => {
       const event = await ctx.db
-        .selectFrom("audit_logs")
-        .where("audit_logs.id", "=", input.eventId)
-        .innerJoin("users", "users.id", "audit_logs.user_id")
-        .innerJoin("actions", "actions.id", "audit_logs.action_id")
-        .innerJoin("context", "context.id", "audit_logs.context_id")
+        .selectFrom("events")
+        .where("events.id", "=", input.eventId)
+        .innerJoin("users", "users.id", "events.user_id")
+        .innerJoin("actions", "actions.id", "events.action_id")
+        .innerJoin("context", "context.id", "events.context_id")
+        .innerJoin(
+          "targets_on_actions",
+          "targets_on_actions.action_id",
+          "events.action_id"
+        )
         .select([
-          "audit_logs.id",
+          "events.id as id",
           "occurred_at",
           // user
           "users.name as userName",
           // action
-          "actions.name as actionName",
+          "actions.code as actionCode",
           "actions.title as actionTitle",
+          "actions.id as actionId",
           // context
           "context.location",
           "context.user_agent",
+          "targets_on_actions.target_id as targetId",
         ])
         .executeTakeFirst();
       if (!event) throw new TRPCError({ code: "NOT_FOUND" });
 
-      const d = await ctx.db
-        .selectFrom(["actions", "targets"])
-        .where("actions.id", "=", "action_wDRNZtVF_oLmhcJov8XRi")
-        .select([
-          "actions.id as id",
-          (eb) =>
-            sql`group_concat(json_object(${sql.literal("id")}, ${eb.ref(
-              "targets.id"
-            )}))`.as("target"),
-        ])
-        .groupBy("actions.id")
-        .executeTakeFirst();
-      console.log(d);
-      console.log(JSON.parse(`[${d?.target}]`));
+      const targets = await ctx.db
+        .selectFrom("event_target")
+        .where("event_target.audit_log_id", "=", event.id)
+        .innerJoin("targets", "targets.id", "event_target.target_id")
+        .selectAll()
+        .execute();
+
+      const output: { name: string; count: number }[] = [];
+      const map = new Map();
+
+      for (const item of targets) {
+        if (map.has(item.name)) {
+          map.set(item.name, map.get(item.name) + 1);
+        } else {
+          map.set(item.name, 1);
+        }
+      }
+
+      for (const [name, count] of map) {
+        output.push({ name, count });
+      }
 
       return {
         id: event.id,
@@ -102,12 +115,13 @@ export const appRouter = t.router({
         },
         action: {
           title: event.actionTitle,
-          name: event.actionName,
+          name: event.actionCode,
         },
         context: {
           location: event.location,
           userAgent: event.user_agent,
         },
+        targets: output,
       };
     }),
 });

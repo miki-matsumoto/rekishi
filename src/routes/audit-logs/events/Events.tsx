@@ -81,7 +81,7 @@ const Table = ({ auditLogs }: Props) => (
                   {action.title}
                 </div>
                 <code className="relative rounded bg-slate-100 py-[0.2rem] px-[0.3rem] font-mono text-xs font-normaltext-slate-900 dark:bg-slate-800 dark:text-slate-400">
-                  {action.name}
+                  {action.code}
                 </code>
               </div>
             </td>

@@ -5,13 +5,13 @@ import { withValidation } from "src/lib/api-middleware/withValidation";
 import formatISO from "date-fns/formatISO";
 
 const postInput = z.object({
-  name: z.string().min(1),
+  code: z.string().min(1),
   title: z.string().optional(),
   targets: z.array(z.string()).min(1),
 });
 
 export const onRequestPost = withValidation(postInput, async ({ data }) => {
-  const { name, targets: targetNames, title } = data.body;
+  const { code, targets: targetNames, title } = data.body;
   const db = data.db;
 
   const targets = await Promise.all(
@@ -69,14 +69,14 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
     .insertInto("actions")
     .values({
       id: `action_${nanoid()}`,
-      name,
+      code,
       title,
       created_at: formatISO(new Date()),
       updated_at: formatISO(new Date()),
     })
     .onConflict((oc) =>
       oc
-        .column("name")
+        .column("code")
         .doUpdateSet({ title, updated_at: formatISO(new Date()) })
     )
     .returningAll()

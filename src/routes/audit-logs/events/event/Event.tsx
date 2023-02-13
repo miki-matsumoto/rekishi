@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Link } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
 import { Button } from "src/components/ui/button";
-import { Activity, ChevronLeft, Globe, MapPin } from "lucide-react";
+import { Activity, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
 import { trpc } from "src/lib/trpc";
 
@@ -88,11 +88,13 @@ const EventDetail = () => {
             <DetailItem>
               <div>
                 <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  <p className="font-medium text-sm">Location</p>
+                  <Crosshair className="h-4 w-4 mr-2" />
+                  <p className="font-medium text-sm">Targets</p>
                 </div>
                 <p className="font-normal ml-6 text-gray-600 text-sm">
-                  {data.context.userAgent}
+                  {data.targets
+                    .map((target) => `${target.count} ${target.name}`)
+                    .join(", ")}
                 </p>
               </div>
             </DetailItem>

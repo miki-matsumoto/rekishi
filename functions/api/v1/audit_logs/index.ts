@@ -23,7 +23,7 @@ const postInput = z.object({
 export const onRequestPost = withValidation(postInput, async ({ data }) => {
   const {
     actor,
-    action: actionName,
+    action: actionCode,
     targets: targetObjects,
     occurred_at,
     context: contextData,
@@ -58,12 +58,12 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
   // validate action
   const action = await db
     .selectFrom("actions")
-    .where("name", "=", actionName)
+    .where("code", "=", actionCode)
     .selectAll()
     .executeTakeFirst();
   if (!action)
     return jsonResponse(
-      { message: `Action: '${actionName}' not found.` },
+      { message: `Action: '${actionCode}' not found.` },
       { status: 404 }
     );
 
@@ -83,7 +83,7 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
     return jsonResponse({
       message: `Targets: ${nonExistTargets
         .map(({ type }) => `'${type}'`)
-        .join(",")} is not defined '${action.name}'.`,
+        .join(",")} is not defined '${action.code}'.`,
     });
 
   // TODO: kysely transaction
@@ -102,7 +102,7 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
   if (!context) throw new Error("Error");
 
   const auditLog = await db
-    .insertInto("audit_logs")
+    .insertInto("events")
     .values({
       id: `audit_log_event_${nanoid()}`,
       action_id: action.id,
@@ -126,7 +126,7 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
 
       return await db
         .insertInto("event_target")
-        .values({ target_id: target.id, audit_log_id: auditLog.id, id })
+        .values({ target_id: target.id, audit_log_id: auditLog.id, event_target_id: id, id: `event_target_${nanoid()}` })
         .returningAll()
         .executeTakeFirst();
     })
@@ -137,20 +137,20 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
 
   // TODO: Correct response
   const log = await db
-    .selectFrom("audit_logs")
-    .where("audit_logs.id", "=", auditLog.id)
-    .innerJoin("context", "context.id", "audit_logs.context_id")
-    .innerJoin("event_target", "event_target.audit_log_id", "audit_logs.id")
+    .selectFrom("events")
+    .where("events.id", "=", auditLog.id)
+    .innerJoin("context", "context.id", "events.context_id")
+    .innerJoin("event_target", "event_target.audit_log_id", "events.id")
     .innerJoin(
       "organizations",
       "organizations.id",
-      "audit_logs.organization_id"
+      "events.organization_id"
     )
     .select([
       "organizations.organization_id",
-      "audit_logs.id",
+      "events.id",
       "context.id as context_id",
-      "audit_logs.user_id",
+      "events.user_id",
       "event_target.id as event_target_id",
       "occurred_at",
     ])
