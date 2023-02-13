@@ -1,10 +1,11 @@
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
 import { Button } from "src/components/ui/button";
 import { Activity, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
 import { trpc } from "src/lib/trpc";
+import Highlight, { defaultProps } from "prism-react-renderer";
 
 export default function EventPage() {
   return (
@@ -39,6 +40,15 @@ const EventDetail = () => {
   const [data] = trpc.findEventById.useSuspenseQuery({
     eventId: event as string,
   });
+
+  const textColors = {
+    string: "#16a34a",
+    number: "#16a34a",
+    property: "#6366f1",
+    operator: "#6b7280",
+    plain: "#6b7280",
+    punctuation: "#6b7280",
+  };
 
   return (
     <div className="max-w-5xl mx-auto border sm:rounded-md">
@@ -77,7 +87,7 @@ const EventDetail = () => {
               <div>
                 <div className="flex items-center">
                   <Globe className="h-4 w-4 mr-2" />
-                  <p className="font-medium text-sm">Browser</p>
+                  <p className="font-medium text-sm">User agenet</p>
                 </div>
                 <p className="font-normal ml-6 text-gray-600 text-sm">
                   {data.context.userAgent ? data.context.userAgent : "-"}
@@ -100,7 +110,31 @@ const EventDetail = () => {
             </DetailItem>
           </div>
         </div>
-        <div className="flex-auto p-4">hello</div>
+        <div className="flex-auto p-4 h-full bg-gray-50">
+          <Highlight {...defaultProps} code={`${data.json}`} language="json">
+            {({ tokens, getLineProps, getTokenProps }) => (
+              <pre className="text-sm bg-gray-50">
+                {tokens.map((line, i) => (
+                  <div {...getLineProps({ line, key: i })}>
+                    {line.map((token, key) => (
+                      <>
+                        <span
+                          {...getTokenProps({ token, key })}
+                          style={{
+                            color:
+                              textColors[
+                                token.types[0] as "string" | "property"
+                              ],
+                          }}
+                        />
+                      </>
+                    ))}
+                  </div>
+                ))}
+              </pre>
+            )}
+          </Highlight>
+        </div>
       </div>
     </div>
   );

@@ -1,13 +1,6 @@
 import { lazy, Route } from "@tanstack/react-router";
 import { auditLogsRoute } from "../..";
-import { Loader } from "@tanstack/react-loaders";
 import { fetchQueryClient, trpcClient } from "src/lib/trpc";
-import { Inputs } from "src/server/trpc";
-
-// export const eventLoader = new Loader({
-//   key: 'event',
-//   loader: async () => await fetchQueryClient.fetchQuery([['hello'], {type: "query"}], () => trpcClient.hello.query())
-// })
 
 export const eventRoute = new Route({
   getParentRoute: () => auditLogsRoute,

@@ -2,7 +2,7 @@ import { trpc } from "src/lib/trpc";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Outputs } from "src/server/trpc";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 type AuditLog = Outputs["auditLogEvents"][0];
 

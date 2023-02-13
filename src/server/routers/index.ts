@@ -107,7 +107,7 @@ export const appRouter = t.router({
         output.push({ name, count });
       }
 
-      return {
+      const res = {
         id: event.id,
         occurred_at: event.occurred_at,
         user: {
@@ -123,6 +123,8 @@ export const appRouter = t.router({
         },
         targets: output,
       };
+
+      return { ...res, json: JSON.stringify(res, null, 2) };
     }),
 });
 
