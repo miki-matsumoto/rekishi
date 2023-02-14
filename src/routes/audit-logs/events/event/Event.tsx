@@ -1,5 +1,5 @@
 import { Suspense, useEffect } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
 import { Button } from "src/components/ui/button";
 import { Activity, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
@@ -11,7 +11,7 @@ export default function EventPage() {
   return (
     <div>
       <div className="max-w-5xl mx-auto">
-        <div className="my-8">
+        <div className="mt-8">
           <Button
             variant="link"
             size="sm"
@@ -20,12 +20,6 @@ export default function EventPage() {
             <ChevronLeft className="mr-1 h-4 w-4" />
             <Link to="/audit-logs/events">Audit Logs</Link>
           </Button>
-          <h4 className="scroll-m-20 text-2xl font-semibold tracking-tight flex items-center">
-            Action Title
-          </h4>
-          <code className="relative rounded bg-slate-100 py-[0.2rem] px-[0.3rem] font-mono text-xs font-normal text-slate-900 dark:bg-slate-800 dark:text-slate-400">
-            Action.Name
-          </code>
         </div>
         <Suspense fallback={<div>Loading... from suspense</div>}>
           <EventDetail />
@@ -35,11 +29,32 @@ export default function EventPage() {
   );
 }
 
+const EventHeader = ({ title, name }: { title: string; name: string }) => (
+  <div className="mb-8">
+    <h4 className="scroll-m-20 text-2xl font-semibold tracking-tight flex items-center">
+      {title ?? name}
+    </h4>
+    <code className="relative rounded bg-slate-100 py-[0.2rem] px-[0.3rem] font-mono text-xs font-normal text-slate-900 dark:bg-slate-800 dark:text-slate-400">
+      {name}
+    </code>
+  </div>
+);
+
 const EventDetail = () => {
+  const { navigate } = useRouter();
   const { event } = useParams();
-  const [data] = trpc.findEventById.useSuspenseQuery({
-    eventId: event as string,
-  });
+  const [data] = trpc.findEventById.useSuspenseQuery(
+    {
+      eventId: event as string,
+    },
+    {
+      onError({ data }) {
+        if (data?.code === "UNAUTHORIZED") {
+          navigate({ to: "/expired" });
+        }
+      },
+    }
+  );
 
   const textColors = {
     string: "#16a34a",
@@ -51,89 +66,94 @@ const EventDetail = () => {
   };
 
   return (
-    <div className="max-w-5xl mx-auto border sm:rounded-md">
-      <div className="flex">
-        <div className="basis-1/3 border-r p-4">
-          <div className="border-b mb-4 pb-4">
-            <div className="flex items-center">
-              <Avatar>
-                <AvatarImage />
-                <AvatarFallback>
-                  {data.user?.name ? data.user.name[0] : ""}
-                </AvatarFallback>
-              </Avatar>
-              <div className="pl-3">
-                <div className="text-base font-medium">{data.user.name}</div>
-                <div className="font-normal text-gray-500 text-xs">
-                  neil.sims@flowbite.com
+    <div>
+      <div>
+        <EventHeader title={data.action?.title ?? ""} name={data.action.name} />
+      </div>
+      <div className="max-w-5xl mx-auto border sm:rounded-md">
+        <div className="flex">
+          <div className="basis-1/3 border-r p-4">
+            <div className="border-b mb-4 pb-4">
+              <div className="flex items-center">
+                <Avatar>
+                  <AvatarImage />
+                  <AvatarFallback>
+                    {data.user.name ? data.user.name[0] : ""}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="pl-3">
+                  <div className="text-base font-medium">{data.user.name}</div>
+                  <div className="font-normal text-gray-500 text-xs">
+                    {data.user.email}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <DetailItem>
-              <div>
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  <p className="font-medium text-sm">Location</p>
-                </div>
-                <p className="text-sm font-normal text-gray-600 ml-6">
-                  {data.context.location ? data.context.location : "-"}
-                </p>
-              </div>
-            </DetailItem>
-
-            <DetailItem>
-              <div>
-                <div className="flex items-center">
-                  <Globe className="h-4 w-4 mr-2" />
-                  <p className="font-medium text-sm">User agenet</p>
-                </div>
-                <p className="font-normal ml-6 text-gray-600 text-sm">
-                  {data.context.userAgent ? data.context.userAgent : "-"}
-                </p>
-              </div>
-            </DetailItem>
-
-            <DetailItem>
-              <div>
-                <div className="flex items-center">
-                  <Crosshair className="h-4 w-4 mr-2" />
-                  <p className="font-medium text-sm">Targets</p>
-                </div>
-                <p className="font-normal ml-6 text-gray-600 text-sm">
-                  {data.targets
-                    .map((target) => `${target.count} ${target.name}`)
-                    .join(", ")}
-                </p>
-              </div>
-            </DetailItem>
-          </div>
-        </div>
-        <div className="flex-auto p-4 h-full bg-gray-50">
-          <Highlight {...defaultProps} code={`${data.json}`} language="json">
-            {({ tokens, getLineProps, getTokenProps }) => (
-              <pre className="text-sm bg-gray-50">
-                {tokens.map((line, i) => (
-                  <div {...getLineProps({ line, key: i })}>
-                    {line.map((token, key) => (
-                      <>
-                        <span
-                          {...getTokenProps({ token, key })}
-                          style={{
-                            color:
-                              textColors[
-                                token.types[0] as "string" | "property"
-                              ],
-                          }}
-                        />
-                      </>
-                    ))}
+            <div className="flex flex-col gap-4">
+              <DetailItem>
+                <div>
+                  <div className="flex items-center">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    <p className="font-medium text-sm">Location</p>
                   </div>
-                ))}
-              </pre>
-            )}
-          </Highlight>
+                  <p className="text-sm font-normal text-gray-600 ml-6">
+                    {data.context.location ? data.context.location : "-"}
+                  </p>
+                </div>
+              </DetailItem>
+
+              <DetailItem>
+                <div>
+                  <div className="flex items-center">
+                    <Globe className="h-4 w-4 mr-2" />
+                    <p className="font-medium text-sm">User agenet</p>
+                  </div>
+                  <p className="font-normal ml-6 text-gray-600 text-sm">
+                    {data.context.userAgent ? data.context.userAgent : "-"}
+                  </p>
+                </div>
+              </DetailItem>
+
+              <DetailItem>
+                <div>
+                  <div className="flex items-center">
+                    <Crosshair className="h-4 w-4 mr-2" />
+                    <p className="font-medium text-sm">Targets</p>
+                  </div>
+                  <p className="font-normal ml-6 text-gray-600 text-sm">
+                    {data.targets
+                      .map((target) => `${target.count} ${target.name}`)
+                      .join(", ")}
+                  </p>
+                </div>
+              </DetailItem>
+            </div>
+          </div>
+          <div className="flex-auto p-4 h-full bg-gray-50">
+            <Highlight {...defaultProps} code={`${data.json}`} language="json">
+              {({ tokens, getLineProps, getTokenProps }) => (
+                <pre className="text-sm bg-gray-50">
+                  {tokens.map((line, i) => (
+                    <div {...getLineProps({ line, key: i })}>
+                      {line.map((token, key) => (
+                        <>
+                          <span
+                            {...getTokenProps({ token, key })}
+                            style={{
+                              color:
+                                textColors[
+                                  token.types[0] as "string" | "property"
+                                ],
+                            }}
+                          />
+                        </>
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
+          </div>
         </div>
       </div>
     </div>
