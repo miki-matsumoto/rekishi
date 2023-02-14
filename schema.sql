@@ -25,12 +25,12 @@ CREATE TABLE "users" (
 CREATE TABLE "events" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "occurred_at" DATETIME NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "user_id" TEXT,
     "context_id" TEXT NOT NULL,
     "organization_id" TEXT NOT NULL,
     "action_id" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL,
-    CONSTRAINT "events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "events_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "events_context_id_fkey" FOREIGN KEY ("context_id") REFERENCES "context" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "events_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "events_action_id_fkey" FOREIGN KEY ("action_id") REFERENCES "actions" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -75,7 +75,8 @@ CREATE TABLE "targets_on_actions" (
 CREATE TABLE "context" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "location" TEXT,
-    "user_agent" TEXT
+    "user_agent" TEXT,
+    "device" TEXT
 );
 
 -- CreateIndex

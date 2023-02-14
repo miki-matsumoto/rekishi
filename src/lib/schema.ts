@@ -7,6 +7,7 @@ export interface Actions {
 }
 
 export interface Context {
+  device: string | null;
   id: string;
   location: string | null;
   user_agent: string | null;
@@ -19,7 +20,7 @@ export interface Events {
   id: string;
   occurred_at: string;
   organization_id: string;
-  user_id: string;
+  user_id: string | null;
 }
 
 export interface EventTarget {
