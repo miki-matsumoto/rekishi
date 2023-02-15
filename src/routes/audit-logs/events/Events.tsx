@@ -71,7 +71,7 @@ const Table = ({ auditLogs }: Props) => (
               <div className="pl-3">
                 <div className="text-base font-medium">{user.name}</div>
                 <div className="font-normal text-gray-500 text-xs">
-                  neil.sims@flowbite.com
+                  {user.email}
                 </div>
               </div>
             </th>
@@ -111,10 +111,10 @@ const TableHeader = () => (
   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
     <tr>
       <th scope="col" className="px-6 py-3">
-        Event
+        Actor
       </th>
       <th scope="col" className="px-6 py-3">
-        Actor
+        Event
       </th>
       <th scope="col" className="px-6 py-3">
         Date

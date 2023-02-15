@@ -35,6 +35,7 @@ export const appRouter = t.router({
         "occurred_at",
         // user
         "users.name as userName",
+        "users.email as email",
         // action
         "actions.code as actionCode",
         "actions.title as actionTitle",
@@ -47,6 +48,7 @@ export const appRouter = t.router({
       occurred_at: event.occurred_at,
       user: {
         name: event.userName,
+        email: event.email,
       },
       action: {
         title: event.actionTitle,
@@ -108,13 +110,12 @@ export const appRouter = t.router({
         output.push({ name, count });
       }
 
-      console.log({ event });
       const res = {
         id: event.id,
         occurred_at: event.occurred_at,
-        user: {
+        actor: {
           name: event.userName,
-          email: event.email,
+          email: event.email ?? "",
         },
         action: {
           title: event.actionTitle,
@@ -127,7 +128,20 @@ export const appRouter = t.router({
         targets: output,
       };
 
-      return { ...res, json: JSON.stringify(res, null, 2) };
+      return {
+        ...res,
+        json: JSON.stringify(
+          {
+            ...res,
+            targets: targets.map((target) => ({
+              id: target.event_target_id,
+              name: target.name,
+            })),
+          },
+          null,
+          2
+        ),
+      };
     }),
 });
 

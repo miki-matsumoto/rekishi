@@ -8,13 +8,14 @@ const postValidation = z.object({
   user_id: z.string().min(1),
   organization_id: z.string().min(1),
   name: z.string().optional(),
+  email: z.string().email(),
   avatar: z.string().optional(),
 });
 
 export const onRequestPost = withValidation(
   postValidation,
   async ({ data }) => {
-    const { organization_id, name, avatar, user_id } = data.body;
+    const { organization_id, name, email, avatar, user_id } = data.body;
 
     const { db } = data;
 
@@ -40,6 +41,7 @@ export const onRequestPost = withValidation(
         user_id,
         avatar,
         name,
+        email,
         created_at: formatISO(new Date()),
         updated_at: formatISO(new Date()),
       })
@@ -47,10 +49,18 @@ export const onRequestPost = withValidation(
         oc.column("user_id").doUpdateSet({
           name: name,
           avatar: avatar,
+          email,
           updated_at: formatISO(new Date()),
         })
       )
-      .returning(["user_id", "name", "avatar", "created_at", "updated_at"])
+      .returning([
+        "user_id",
+        "name",
+        "email",
+        "avatar",
+        "created_at",
+        "updated_at",
+      ])
       .executeTakeFirst();
 
     if (!result) return internalServerErrorResponse();

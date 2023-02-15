@@ -78,13 +78,13 @@ const EventDetail = () => {
                 <Avatar>
                   <AvatarImage />
                   <AvatarFallback>
-                    {data.user.name ? data.user.name[0] : ""}
+                    {data.actor.name ? data.actor.name[0] : ""}
                   </AvatarFallback>
                 </Avatar>
                 <div className="pl-3">
-                  <div className="text-base font-medium">{data.user.name}</div>
+                  <div className="text-base font-medium">{data.actor.name}</div>
                   <div className="font-normal text-gray-500 text-xs">
-                    {data.user.email}
+                    {data.actor.email}
                   </div>
                 </div>
               </div>
