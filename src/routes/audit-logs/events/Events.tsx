@@ -52,7 +52,7 @@ const Table = ({ auditLogs }: Props) => (
         {auditLogs.map(({ user, id, action }) => (
           <tr
             key={id}
-            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer group"
+            className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 group"
           >
             <th
               scope="row"

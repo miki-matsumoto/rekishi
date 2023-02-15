@@ -16,7 +16,6 @@ export function withValidation<T extends ZodSchema>(
 ) {
   return async (context: Context<T>) => {
     const json = await context.request.json();
-    console.log(json);
     const parsed = schema.safeParse(json);
     if (!parsed.success) {
       const { issues } = parsed.error;

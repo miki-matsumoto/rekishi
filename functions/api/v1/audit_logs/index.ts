@@ -1,9 +1,7 @@
 import { z } from "zod";
-import { database } from "src/lib/db";
 import { nanoid } from "nanoid";
 import { jsonResponse } from "src/lib/response";
 import { withValidation } from "src/lib/api-middleware/withValidation";
-import formatISO from "date-fns/formatISO";
 
 const postInput = z.object({
   action: z.string(),
@@ -107,10 +105,12 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
       id: `audit_log_event_${nanoid()}`,
       action_id: action.id,
       user_id: user.id,
-      occurred_at: occurred_at ? formatISO(occurred_at) : formatISO(new Date()),
+      occurred_at: occurred_at
+        ? occurred_at.toISOString()
+        : new Date().toISOString(),
       context_id: context.id,
       organization_id: organization.id,
-      created_at: formatISO(new Date()),
+      created_at: new Date().toISOString(),
     })
     .returningAll()
     .executeTakeFirst();
@@ -126,7 +126,12 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
 
       return await db
         .insertInto("event_target")
-        .values({ target_id: target.id, audit_log_id: auditLog.id, event_target_id: id, id: `event_target_${nanoid()}` })
+        .values({
+          target_id: target.id,
+          audit_log_id: auditLog.id,
+          event_target_id: id,
+          id: `event_target_${nanoid()}`,
+        })
         .returningAll()
         .executeTakeFirst();
     })
@@ -141,11 +146,7 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
     .where("events.id", "=", auditLog.id)
     .innerJoin("context", "context.id", "events.context_id")
     .innerJoin("event_target", "event_target.audit_log_id", "events.id")
-    .innerJoin(
-      "organizations",
-      "organizations.id",
-      "events.organization_id"
-    )
+    .innerJoin("organizations", "organizations.id", "events.organization_id")
     .select([
       "organizations.organization_id",
       "events.id",

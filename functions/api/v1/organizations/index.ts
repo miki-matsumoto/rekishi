@@ -2,7 +2,6 @@ import { z } from "zod";
 import { nanoid } from "nanoid";
 import { internalServerErrorResponse, jsonResponse } from "src/lib/response";
 import { withValidation } from "src/lib/api-middleware/withValidation";
-import formatISO from "date-fns/formatISO";
 
 const postInput = z.object({
   organization_id: z.string().min(1),
@@ -14,8 +13,6 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
   const { organization_id, name, avatar } = data.body;
   const { db } = data;
 
-  console.log(formatISO(new Date()));
-
   const result = await db
     .insertInto("organizations")
     .values({
@@ -23,13 +20,13 @@ export const onRequestPost = withValidation(postInput, async ({ data }) => {
       organization_id,
       name,
       avatar,
-      created_at: formatISO(new Date()),
-      updated_at: formatISO(new Date()),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     })
     .onConflict((oc) =>
       oc
         .column("organization_id")
-        .doUpdateSet({ name, avatar, updated_at: formatISO(new Date()) })
+        .doUpdateSet({ name, avatar, updated_at: new Date().toISOString() })
     )
     .returning([
       "organization_id",
