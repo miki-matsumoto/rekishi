@@ -56,20 +56,5 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
       },
     });
 
-  const organization = await db
-    .selectFrom("organizations")
-    .select("organization_id")
-    .where("organization_id", "=", session.organization)
-    .executeTakeFirst();
-  if (!organization) return Response.redirect(notFoundUrl, 302);
-
-  await session.save({ organization: organization.organization_id });
-
-  return jsonResponse(null, {
-    status: 302,
-    headers: {
-      Location: `${url.origin}/audit-logs/events`,
-      "Set-Cookie": `${session.toHeaderValue()};Expires=${date.toUTCString()};`,
-    },
-  });
+  return Response.redirect(expiredUrl, 302);
 };
