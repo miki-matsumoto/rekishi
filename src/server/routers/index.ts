@@ -112,7 +112,6 @@ export const appRouter = t.router({
 
       const res = {
         id: event.id,
-        occurred_at: event.occurred_at,
         actor: {
           name: event.userName,
           email: event.email ?? "",
@@ -126,6 +125,7 @@ export const appRouter = t.router({
           userAgent: event.user_agent,
         },
         targets: output,
+        occurred_at: event.occurred_at,
       };
 
       return {

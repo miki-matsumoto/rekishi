@@ -1,11 +1,13 @@
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useParams } from "@tanstack/react-router";
 import { Button } from "src/components/ui/button";
-import { Activity, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
+import { Calendar, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
 import { trpc } from "src/lib/trpc";
 import Highlight, { defaultProps } from "prism-react-renderer";
+import { format } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
 
 export default function EventPage() {
   return (
@@ -82,10 +84,14 @@ const EventDetail = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div className="pl-3">
-                  <div className="text-base font-medium">{data.actor.name}</div>
-                  <div className="font-normal text-gray-500 text-xs">
-                    {data.actor.email}
+                  <div className="text-base font-medium">
+                    {data.actor.name || data.actor.email}
                   </div>
+                  {data.actor.email && (
+                    <div className="font-normal text-gray-500 text-xs">
+                      {data.actor.email}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -93,8 +99,30 @@ const EventDetail = () => {
               <DetailItem>
                 <div>
                   <div className="flex items-center">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    <p className="font-medium text-sm">Location</p>
+                    <Calendar className="h-4 w-4 mr-2 text-gray-700" />
+                    <p className="font-medium text-sm text-gray-700">Date</p>
+                  </div>
+                  <div>
+                    <p className="font-normal ml-6 text-gray-600 text-sm">
+                      {format(
+                        utcToZonedTime(
+                          new Date(data.occurred_at),
+                          Intl.DateTimeFormat().resolvedOptions().timeZone
+                        ),
+                        "MM/dd/yyy HH:mm:ss xxx"
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </DetailItem>
+
+              <DetailItem>
+                <div>
+                  <div className="flex items-center">
+                    <MapPin className="h-4 w-4 mr-2 text-gray-700" />
+                    <p className="font-medium text-sm text-gray-700">
+                      Location
+                    </p>
                   </div>
                   <p className="text-sm font-normal text-gray-600 ml-6">
                     {data.context.location ? data.context.location : "-"}
@@ -105,8 +133,10 @@ const EventDetail = () => {
               <DetailItem>
                 <div>
                   <div className="flex items-center">
-                    <Globe className="h-4 w-4 mr-2" />
-                    <p className="font-medium text-sm">User agenet</p>
+                    <Globe className="h-4 w-4 mr-2 text-gray-700" />
+                    <p className="font-medium text-sm text-gray-700">
+                      User agenet
+                    </p>
                   </div>
                   <p className="font-normal ml-6 text-gray-600 text-sm">
                     {data.context.userAgent ? data.context.userAgent : "-"}
@@ -117,8 +147,8 @@ const EventDetail = () => {
               <DetailItem>
                 <div>
                   <div className="flex items-center">
-                    <Crosshair className="h-4 w-4 mr-2" />
-                    <p className="font-medium text-sm">Targets</p>
+                    <Crosshair className="h-4 w-4 mr-2 text-gray-700" />
+                    <p className="font-medium text-sm text-gray-700">Targets</p>
                   </div>
                   <p className="font-normal ml-6 text-gray-600 text-sm">
                     {data.targets
