@@ -6,8 +6,7 @@ import { Calendar, ChevronLeft, Crosshair, Globe, MapPin } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
 import { trpc } from "src/lib/trpc";
 import Highlight, { defaultProps } from "prism-react-renderer";
-import { format } from "date-fns";
-import { utcToZonedTime } from "date-fns-tz";
+import { utcToZonedTime, format } from "date-fns-tz";
 
 export default function EventPage() {
   return (
@@ -109,7 +108,11 @@ const EventDetail = () => {
                           new Date(data.occurred_at),
                           Intl.DateTimeFormat().resolvedOptions().timeZone
                         ),
-                        "MM/dd/yyy HH:mm:ss xxx"
+                        "MM/dd/yyy HH:mm:ss xxx",
+                        {
+                          timeZone:
+                            Intl.DateTimeFormat().resolvedOptions().timeZone,
+                        }
                       )}
                     </p>
                   </div>
