@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
 import { Suspense } from "react";
 import { format } from "date-fns";
 import { utcToZonedTime } from "date-fns-tz";
+import { ListIcon } from "lucide-react";
 
 type AuditLog = Outputs["auditLogEvents"][0];
 
@@ -25,7 +26,7 @@ export default function EventsPage() {
 
 const EventTable = () => {
   const { navigate } = useRouter();
-  const [data, dataQuery] = trpc.auditLogEvents.useSuspenseQuery(
+  const [data] = trpc.auditLogEvents.useSuspenseQuery(
     // @ts-ignore
     {},
     {
@@ -37,9 +38,8 @@ const EventTable = () => {
       },
     }
   );
-  console.log(dataQuery.isFetching);
 
-  return <Table auditLogs={data} />;
+  return <>{data.length ? <Table auditLogs={data} /> : <EmptyState />}</>;
 };
 
 type Props = {
@@ -132,4 +132,15 @@ const TableHeader = () => (
       <th scope="col" className="px-6 py-3"></th>
     </tr>
   </thead>
+);
+
+const EmptyState = () => (
+  <div className="border sm:rounded-md min-h-[60vh] flex justify-center items-center">
+    <div className="flex flex-col items-center">
+      <ListIcon className="h-10 w-10" />
+      <h4 className="mt-4 scroll-m-20 text-md font-semibold tracking-tight text-gray-600">
+        You don't have any audit log events.
+      </h4>
+    </div>
+  </div>
 );
