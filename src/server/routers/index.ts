@@ -45,7 +45,7 @@ export const appRouter = t.router({
 
     return events.map((event) => ({
       id: event.id,
-      occurred_at: event.occurred_at,
+      occurredAt: event.occurred_at,
       user: {
         name: event.userName,
         email: event.email,

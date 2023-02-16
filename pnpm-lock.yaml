@@ -20,6 +20,7 @@ specifiers:
   class-variance-authority: ^0.4.0
   clsx: ^1.2.1
   date-fns: ^2.29.3
+  date-fns-tz: ^2.0.0
   kysely: ^0.23.1
   kysely-codegen: ^0.9.0
   kysely-d1: ^0.0.6
@@ -54,6 +55,7 @@ dependencies:
   class-variance-authority: 0.4.0_typescript@4.9.4
   clsx: 1.2.1
   date-fns: 2.29.3
+  date-fns-tz: 2.0.0_date-fns@2.29.3
   kysely: 0.23.1
   kysely-d1: 0.0.6_kysely@0.23.1
   lucide-react: 0.109.0_react@18.2.0
@@ -1218,6 +1220,14 @@ packages:
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
     dev: true
+
+  /date-fns-tz/2.0.0_date-fns@2.29.3:
+    resolution: {integrity: sha512-OAtcLdB9vxSXTWHdT8b398ARImVwQMyjfYGkKD2zaGpHseG2UPHbHjXELReErZFxWdSLph3c2zOaaTyHfOhERQ==}
+    peerDependencies:
+      date-fns: '>=2.0.0'
+    dependencies:
+      date-fns: 2.29.3
+    dev: false
 
   /date-fns/2.29.3:
     resolution: {integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==}

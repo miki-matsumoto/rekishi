@@ -2,7 +2,9 @@ import { trpc } from "src/lib/trpc";
 import { Link, useRouter } from "@tanstack/react-router";
 import { Outputs } from "src/server/trpc";
 import { Avatar, AvatarFallback, AvatarImage } from "src/components/ui/avatar";
-import { Suspense, useEffect } from "react";
+import { Suspense } from "react";
+import { format } from "date-fns";
+import { utcToZonedTime } from "date-fns-tz";
 
 type AuditLog = Outputs["auditLogEvents"][0];
 
@@ -49,7 +51,7 @@ const Table = ({ auditLogs }: Props) => (
     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
       <TableHeader />
       <tbody>
-        {auditLogs.map(({ user, id, action }) => (
+        {auditLogs.map(({ user, id, action, occurredAt }) => (
           <tr
             key={id}
             className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 group"
@@ -69,26 +71,34 @@ const Table = ({ auditLogs }: Props) => (
                 </AvatarFallback>
               </Avatar>
               <div className="pl-3">
-                <div className="text-base font-medium">{user.name}</div>
-                <div className="font-normal text-gray-500 text-xs">
+                <p className="font-medium">{user.name}</p>
+                <p className="font-normal text-gray-500 text-xs">
                   {user.email}
-                </div>
+                </p>
               </div>
             </th>
             <td className="px-6 py-4">
               <div>
-                <div className="text-base font-medium text-gray-900">
-                  {action.title}
-                </div>
+                <p className="font-medium text-gray-900">{action.title}</p>
                 <code className="relative rounded bg-slate-100 py-[0.2rem] px-[0.3rem] font-mono text-xs font-normaltext-slate-900 dark:bg-slate-800 dark:text-slate-400">
                   {action.code}
                 </code>
               </div>
             </td>
             <td className="px-6 py-4">
-              <div className="flex items-center">
-                <div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>{" "}
-                Online
+              <div>
+                <p className="text-gray-900">
+                  {format(new Date(occurredAt), "MM/dd/yyyy")}
+                </p>
+                <p className="text-xs">
+                  {format(
+                    utcToZonedTime(
+                      new Date(occurredAt),
+                      Intl.DateTimeFormat().resolvedOptions().timeZone
+                    ),
+                    "HH:mm:ss xxx"
+                  )}
+                </p>
               </div>
             </td>
             <td className="px-6 py-4 opacity-0 group-hover:opacity-100">
