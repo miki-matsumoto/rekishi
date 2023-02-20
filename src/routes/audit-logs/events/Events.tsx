@@ -16,13 +16,57 @@ export default function EventsPage() {
         <h3 className="my-8 scroll-m-20 text-2xl font-semibold tracking-tight">
           Audit Logs
         </h3>
-        <Suspense fallback={<div>Loading... from suspense</div>}>
+        <Suspense fallback={<EventTableSkelton />}>
           <EventTable />
         </Suspense>
       </div>
     </div>
   );
 }
+
+const EventTableSkelton = () => (
+  <div className="max-w-5xl mx-auto">
+    <div className="relative overflow-x-auto sm:rounded-md border-t border-l border-r">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+        <TableHeader />
+        <tbody>
+          {Array.from({ length: 10 }, (_, i) => i + 1).map(() => (
+            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 group animate-pulse">
+              <th
+                scope="row"
+                className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
+              >
+                <Avatar>
+                  <AvatarImage src="" />
+                  <AvatarFallback className="bg-gray-200"></AvatarFallback>
+                </Avatar>
+                <div className="w-full pl-3 gap-1 inline-grid">
+                  <p className="h-2.5 bg-gray-200 rounded-full w-full"></p>
+                  <p className="h-1.5 bg-gray-200 rounded-full w-6/12"></p>
+                </div>
+              </th>
+              <td className="px-6 py-4">
+                <div className="w-full gap-1 inline-grid">
+                  <p className="h-2.5 bg-gray-200 rounded-full w-full"></p>
+                  <code className="relative rounded bg-slate-100 py-[0.2rem] px-[0.3rem] font-mono text-xs font-normaltext-slate-900 dark:bg-slate-800 dark:text-slate-400 w-1/3">
+                    <p className="h-1.5 bg-gray-200 rounded-full w-full"></p>
+                  </code>
+                </div>
+              </td>
+              <td className="px-6 py-4">
+                <div className="w-full gap-1 inline-grid">
+                  <p className="h-2.5 bg-gray-200 rounded-full w-full"></p>
+                  <p className="h-1.5 bg-gray-200 rounded-full w-6/12"></p>
+                </div>
+              </td>
+              <td className="px-6 py-4"></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+);
 
 const EventTable = () => {
   const { navigate } = useRouter();
