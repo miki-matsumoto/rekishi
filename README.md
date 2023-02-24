@@ -8,7 +8,9 @@
 
 ## Tech
 - React
-- Vite
+- Tailwind CSS
+- Radix UI
+- vite
 - vitest
 - stepci
 - Tanstack query (react-query)
